@@ -83,25 +83,88 @@ export const purchasedCourse = async (req, res) => {
 };
 
 // Update User Course Progress
+// export const updateUserCourseProgress = async (req, res) => {
+//   try {
+//     const userId = req.auth.userId;
+//     const { courseId, lectureId } = req.body;
+//     let progressData = await CourseProgress.findOne({ userId, courseId });
+
+//     if (!progressData) {
+//       progressData = await CourseProgress.create({
+//         userId,
+//         courseId,
+//         lectureCompleted: [lectureId],
+//       });
+//     }
+//     if (progressData) {
+//       if (progressData.lectureCompleted.includes(lectureId)) {
+//         return res.json({ success: true, message: "Already completed" });
+//       }
+//       progressData.lectureCompleted.push(lectureId);
+//       await progressData.save();
+//     } else {
+//       await CourseProgress.create({
+//         userId,
+//         courseId,
+//         lectureCompleted: [lectureId],
+//       });
+//       res.json({ success: true, message: "Progress updated" });
+//     }
+//     // Check overall course progress
+//     const courseData = await Course.findById(courseId);
+//     if (courseData) {
+//       // Calculate total lectures available in the course
+//       const totalLectures = courseData.courseContent.reduce(
+//         (total, chapter) => total + chapter.chapterContent.length,
+//         0
+//       );
+
+//       if (progressData.lectureCompleted.length === totalLectures) {
+//         progressData.completed = true; // Ensure your model supports this field
+//       }
+//     }
+
+//     await progressData.save();
+//     res.json({ success: true, message: "Progress updated", progressData });
+//   } catch (error) {
+//     res.json({ success: false, message: error.message });
+//   }
+// };
+
 export const updateUserCourseProgress = async (req, res) => {
   try {
     const userId = req.auth.userId;
     const { courseId, lectureId } = req.body;
-    const progressData = await CourseProgress.findOne({ userId, courseId });
-    if (progressData) {
-      if (progressData.lectureCompleted.includes(lectureId)) {
-        return res.json({ success: true, message: "Already completed" });
-      }
-      progressData.lectureCompleted.push(lectureId);
-      await progressData.save();
-    } else {
-      await CourseProgress.create({
+    let progressData = await CourseProgress.findOne({ userId, courseId });
+
+    if (!progressData) {
+      progressData = await CourseProgress.create({
         userId,
         courseId,
         lectureCompleted: [lectureId],
       });
-      res.json({ success: true, message: "Progress updated" });
+    } else {
+      if (progressData.lectureCompleted.includes(lectureId)) {
+        return res.json({ success: true, message: "Already completed" });
+      }
+      progressData.lectureCompleted.push(lectureId);
     }
+
+    // Check overall course progress
+    const courseData = await Course.findById(courseId);
+    if (courseData) {
+      // Calculate total lectures available in the course
+      const totalLectures = courseData.courseContent.reduce(
+        (total, chapter) => total + chapter.chapterContent.length,
+        0
+      );
+      if (progressData.lectureCompleted.length === totalLectures) {
+        progressData.completed = true; // Ensure your model supports this field
+      }
+    }
+
+    await progressData.save();
+    res.json({ success: true, message: "Progress updated", progressData });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
