@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 
-const useSchema = Schema(
+const userSchema = new Schema(
   {
     _id: {
       type: String,
@@ -23,6 +23,6 @@ const useSchema = Schema(
   { timestamps: true }
 );
 
-const User = model("User", useSchema);
+const User = model("User", userSchema);
 
 export default User;
