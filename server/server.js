@@ -1,7 +1,7 @@
 import { clerkMiddleware } from "@clerk/express";
 import cors from "cors";
 import "dotenv/config";
-import express, { application } from "express";
+import express from "express";
 import connectCloudinary from "./configs/cloudinary.config.js";
 import connectDB from "./configs/mongodb.config.js";
 import {
@@ -34,7 +34,7 @@ app.use("/api/course", express.json(), courseRouter);
 
 app.use("/api/user", express.json(), userRouter);
 
-app.post("/stripe", express.raw({ type: application / json }), stripeWebhooks);
+app.post("/stripe", express.raw({ type: "application/json" }), stripeWebhooks);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
