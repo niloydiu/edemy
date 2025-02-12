@@ -19,6 +19,39 @@ export const updateRoleEducator = async (req, res) => {
 };
 
 // Add new course
+// export const addCourse = async (req, res) => {
+//   try {
+//     const { courseData } = req.body;
+//     const imageFile = req.file;
+//     const educatorId = req.auth.userId;
+
+//     if (!imageFile) {
+//       return res.json({
+//         success: false,
+//         message: "Thumbnail image not attached",
+//       });
+//     }
+//     const parsedCourseData = JSON.parse(courseData);
+
+//     parsedCourseData.educator = educatorId;
+
+//     const newCourse = await Course.create(parsedCourseData);
+
+//     const imageUpload = await cloudinary.uploader.upload(imageFile.path);
+
+//     newCourse.courseThumbnail = imageUpload.secure_url;
+
+//     await newCourse.save();
+
+//     res.json({
+//       success: true,
+//       message: "Course added successfully",
+//     });
+//   } catch (error) {
+//     res.json({ success: false, message: error.message });
+//   }
+// };
+
 export const addCourse = async (req, res) => {
   try {
     const { courseData } = req.body;
@@ -31,17 +64,19 @@ export const addCourse = async (req, res) => {
         message: "Thumbnail image not attached",
       });
     }
+
+    // Upload image to Cloudinary with folder organization
+    const result = await cloudinary.uploader.upload(imageFile.path, {
+      folder: "course_thumbnails",
+    });
+
+    // Parse course data and include the thumbnail URL
     const parsedCourseData = JSON.parse(courseData);
-
     parsedCourseData.educator = educatorId;
+    parsedCourseData.courseThumbnail = result.secure_url;
 
-    const newCourse = await Course.create(parsedCourseData);
-
-    const imageUpload = await cloudinary.uploader.upload(imageFile.path);
-
-    newCourse.courseThumbnail = imageUpload.secure_url;
-
-    await newCourse.save();
+    // Create the course with the complete data in one operation
+    await Course.create(parsedCourseData);
 
     res.json({
       success: true,
