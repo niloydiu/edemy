@@ -64,7 +64,14 @@ const Footer = () => {
               &copy;niloy
             </a>
           </span>{" "}
-          | All rights reserved
+          |{" "}
+          <a
+            href="https://niloykm.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Click here to contact the developer
+          </a>{" "}
         </p>
       </footer>
     </>
