@@ -2,6 +2,8 @@
 
 Edemy is a full-stack Learning Management System (LMS) designed to facilitate online education. Educators can create and manage courses with multiple chapters and lectures, while students can enroll, track their progress, and rate courses.
 
+**Live Website:** [https://ndemy-frontend.vercel.app/](https://ndemy-frontend.vercel.app/)
+
 ## Features ✨
 
 * **User Authentication:** Secure authentication with Clerk, supporting both student and educator roles.
