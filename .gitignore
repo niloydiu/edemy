@@ -1,2 +1,8 @@
 node_modules
 .env
+.next
+dist
+playwright-report
+test-results
+*.tsbuildinfo
+.DS_Store
