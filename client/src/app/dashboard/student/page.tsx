@@ -79,32 +79,32 @@ export default function StudentDashboard() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-slate-50">
       <Navbar />
 
       <main className="flex-1 max-w-7xl mx-auto px-6 py-12 w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* Left Column: Course List */}
         <div className="space-y-6">
-          <div className="glassmorphic p-6 rounded-lg border border-white/10">
-            <h3 className="text-lg font-black uppercase tracking-wider text-neonCyan mb-4">
-              Enrolled Curriculums
+          <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+            <h3 className="text-lg font-bold tracking-tight text-slate-900 mb-4">
+              Enrolled Courses
             </h3>
             
             {loading ? (
-              <div className="text-xs text-gray-500 animate-pulse uppercase font-bold tracking-widest">
-                Querying Registration Nodes...
+              <div className="text-xs text-slate-500 animate-pulse uppercase font-bold tracking-wider">
+                Verifying enrollment list...
               </div>
             ) : courses.length === 0 ? (
               <div className="space-y-4">
-                <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">
+                <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">
                   No courses purchased yet.
                 </p>
                 <Link
                   href="/courses"
-                  className="inline-block px-4 py-2 bg-neonCyan text-black text-xs font-black rounded uppercase tracking-widest"
+                  className="inline-block px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded tracking-wider"
                 >
-                  Go to Catalog
+                  Browse Catalog
                 </Link>
               </div>
             ) : (
@@ -115,17 +115,17 @@ export default function StudentDashboard() {
                     <button
                       key={course._id}
                       onClick={() => setSelectedCourse(course)}
-                      className={`w-full text-left p-4 rounded border transition-all ${
+                      className={`w-full text-left p-4 rounded-lg border transition-all cursor-pointer ${
                         isActive
-                          ? 'bg-neonCyan/10 border-neonCyan'
-                          : 'bg-white/5 border-white/10 hover:border-white/20'
+                          ? 'bg-indigo-50 border-indigo-500 text-indigo-700'
+                          : 'bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-700'
                       }`}
                     >
-                      <h4 className="text-sm font-bold uppercase text-white truncate">
+                      <h4 className="text-sm font-bold truncate">
                         {course.courseTitle}
                       </h4>
-                      <p className="text-[10px] text-gray-500 uppercase font-semibold mt-1">
-                        Professor Tech
+                      <p className="text-[10px] text-slate-400 font-semibold mt-1">
+                        Instructor: Professor Tech
                       </p>
                     </button>
                   );
@@ -136,12 +136,12 @@ export default function StudentDashboard() {
 
           {/* Parental Status Details */}
           {user && user.parentId && (
-            <div className="glassmorphic p-6 rounded-lg border border-white/5 bg-pink-950/5">
-              <h4 className="text-xs font-black text-pink-400 uppercase tracking-widest mb-2">
-                Parental Terminal Connected
+            <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm bg-indigo-50/10">
+              <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                Parent Account Linked
               </h4>
-              <p className="text-[11px] text-gray-500 leading-relaxed">
-                Your profile is linked to parent terminal (ID: <span className="font-bold text-gray-400">{user.parentId}</span>). Progress reports are automatically synced.
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Your profile is linked to parent terminal (ID: <span className="font-semibold text-slate-700">{user.parentId}</span>). Progress reports are automatically synced.
               </p>
             </div>
           )}
@@ -150,16 +150,16 @@ export default function StudentDashboard() {
         {/* Right Columns: Active Lesson Player Terminal */}
         <div className="lg:col-span-2 space-y-6">
           {selectedCourse ? (
-            <div className="glassmorphic p-8 rounded-lg border border-white/10 space-y-6">
+            <div className="bg-white p-8 rounded-lg border border-slate-200 shadow-sm space-y-6">
               
               {/* Course Header with Progress */}
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-6">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-6">
                 <div>
-                  <h2 className="text-2xl font-black uppercase tracking-wider text-white">
+                  <h2 className="text-xl font-bold text-slate-900">
                     {selectedCourse.courseTitle}
                   </h2>
-                  <p className="text-xs text-gray-400 mt-1 uppercase tracking-wide">
-                    Live Core System | Tutor: Professor Tech
+                  <p className="text-xs text-slate-500 mt-1">
+                    Academic Course | Instructor: Professor Tech
                   </p>
                 </div>
                 
@@ -168,27 +168,27 @@ export default function StudentDashboard() {
                     {progress.completed && (
                       <button
                         onClick={() => setShowCertificate(true)}
-                        className="px-3.5 py-2 bg-gradient-to-r from-neonMagenta to-neonPurple hover:from-neonPurple hover:to-neonMagenta text-black text-xs font-black rounded uppercase tracking-widest animate-pulse shadow-neonMagenta/50 shadow-md cursor-pointer"
+                        className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded shadow-sm cursor-pointer"
                       >
-                        Certificate
+                        Claim Certificate
                       </button>
                     )}
-                    <div className="bg-white/5 border border-white/10 px-4 py-2.5 rounded flex items-center gap-4">
+                    <div className="bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-lg flex items-center gap-4">
                       <div>
-                        <div className="text-xs text-gray-500 font-bold uppercase tracking-widest">Progress</div>
-                        <div className="text-sm font-black text-neonCyan">
+                        <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Progress</div>
+                        <div className="text-sm font-bold text-slate-700">
                           {progress.completedLessons?.length || 0} / {selectedCourse.lessons?.length || 0} Complete
                         </div>
                       </div>
-                      <div className="w-16 h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                      <div className="w-16 h-1.5 bg-slate-200 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-neonCyan"
+                          className="h-full bg-indigo-600"
                           style={{
                             width: `${
                               selectedCourse.lessons?.length
                                 ? ((progress.completedLessons?.length || 0) / selectedCourse.lessons.length) * 100
                                 : 0
-                            }%`,
+                             }%`,
                           }}
                         />
                       </div>
@@ -201,9 +201,9 @@ export default function StudentDashboard() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
                 {/* Lesson List Column */}
-                <div className="space-y-2.5 md:border-r md:border-white/5 md:pr-6">
-                  <h3 className="text-xs font-black uppercase text-gray-500 tracking-wider mb-2">
-                    Lessons Blueprint
+                <div className="space-y-2 md:border-r md:border-slate-100 md:pr-6">
+                  <h3 className="text-xs font-bold uppercase text-slate-400 tracking-wider mb-2">
+                    Lessons List
                   </h3>
                   {selectedCourse.lessons?.map((lesson: any, index: number) => {
                     const isCompleted = progress?.completedLessons?.includes(lesson.lessonId);
@@ -212,19 +212,19 @@ export default function StudentDashboard() {
                       <button
                         key={lesson.lessonId}
                         onClick={() => setSelectedLesson(lesson)}
-                        className={`w-full text-left p-3 rounded flex items-center justify-between text-xs font-semibold transition-all ${
+                        className={`w-full text-left p-3 rounded-lg flex items-center justify-between text-xs font-semibold transition-all cursor-pointer ${
                           isSelected
-                            ? 'bg-white/10 text-neonCyan font-bold'
-                            : 'hover:bg-white/5 text-gray-400'
+                            ? 'bg-indigo-50 text-indigo-700 font-bold'
+                            : 'hover:bg-slate-50 text-slate-600'
                         }`}
                       >
                         <span className="truncate pr-2">
                           {index + 1}. {lesson.lessonTitle}
                         </span>
                         {isCompleted ? (
-                          <CheckCircle className="w-4 h-4 text-neonCyan flex-shrink-0" />
+                          <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                         ) : (
-                          <Circle className="w-4 h-4 text-gray-600 flex-shrink-0" />
+                          <Circle className="w-4 h-4 text-slate-300 flex-shrink-0" />
                         )}
                       </button>
                     );
@@ -235,12 +235,12 @@ export default function StudentDashboard() {
                 <div className="md:col-span-2 space-y-6">
                   {selectedLesson ? (
                     <div className="space-y-6">
-                      <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                      <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                         <div>
-                          <h4 className="text-lg font-black uppercase tracking-wide text-white">
+                          <h4 className="text-base font-bold text-slate-900">
                             {selectedLesson.lessonTitle}
                           </h4>
-                          <span className="inline-block mt-1 bg-white/5 border border-white/10 px-2.5 py-0.5 rounded text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                          <span className="inline-block mt-1 bg-slate-50 border border-slate-200 px-2.5 py-0.5 rounded text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                             Type: {selectedLesson.lessonType}
                           </span>
                         </div>
@@ -248,23 +248,23 @@ export default function StudentDashboard() {
                         {/* Interactive Message Button */}
                         <Link
                           href={`/chat?tutorId=${selectedCourse.educator}`}
-                          className="p-2 bg-neonCyan/10 hover:bg-neonCyan text-neonCyan hover:text-black border border-neonCyan/20 rounded flex items-center gap-1.5 text-xs font-bold transition-all"
+                          className="p-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg flex items-center gap-1.5 text-xs font-bold transition-all"
                         >
-                          <MessageCircle className="w-4 h-4" /> Message Tutor
+                          <MessageCircle className="w-4 h-4" /> Ask Instructor
                         </Link>
                       </div>
 
                       {/* Lesson Dynamic Content Display */}
-                      <div className="glassmorphic p-6 rounded-lg border border-white/5 space-y-4">
+                      <div className="bg-slate-50 p-6 rounded-lg border border-slate-200 space-y-4">
                         {selectedLesson.lessonType === 'pdf' && (
                           <div className="space-y-4 text-center py-6">
                             <FileText className="w-16 h-16 text-red-500 mx-auto" />
-                            <p className="text-xs text-gray-400">PDF Reference Study Blueprint Ready.</p>
+                            <p className="text-xs text-slate-600 font-semibold">PDF Reference Study Document is ready.</p>
                             <a
                               href={selectedLesson.pdfUrl}
                               target="_blank"
                               rel="noreferrer"
-                              className="inline-flex items-center gap-1.5 px-4 py-2 bg-red-500/20 text-red-400 border border-red-500/30 rounded text-xs font-black uppercase tracking-widest hover:bg-red-500/30"
+                              className="inline-flex items-center gap-1.5 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded text-xs font-bold hover:bg-slate-50 shadow-sm"
                             >
                               OPEN REFERENCE PDF <ExternalLink className="w-4 h-4" />
                             </a>
@@ -274,12 +274,12 @@ export default function StudentDashboard() {
                         {selectedLesson.lessonType === 'link' && (
                           <div className="space-y-4 text-center py-6">
                             <BookOpen className="w-16 h-16 text-blue-500 mx-auto" />
-                            <p className="text-xs text-gray-400">External reference web URL provided.</p>
+                            <p className="text-xs text-slate-600 font-semibold">External reference web URL provided.</p>
                             <a
                               href={selectedLesson.webLink}
                               target="_blank"
                               rel="noreferrer"
-                              className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded text-xs font-black uppercase tracking-widest hover:bg-blue-500/30"
+                              className="inline-flex items-center gap-1.5 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded text-xs font-bold hover:bg-slate-50 shadow-sm"
                             >
                               LAUNCH WEB REFERENCE <ExternalLink className="w-4 h-4" />
                             </a>
@@ -289,22 +289,22 @@ export default function StudentDashboard() {
                         {selectedLesson.lessonType === 'online' && (
                           <div className="space-y-4">
                             <div className="flex items-center gap-3">
-                              <Video className="w-10 h-10 text-cyan-400" />
+                              <Video className="w-10 h-10 text-indigo-600 animate-pulse" />
                               <div>
-                                <h5 className="text-xs font-black text-gray-400 uppercase">Online Stream Schedule</h5>
-                                <p className="text-xs text-neonCyan font-semibold">
-                                  {selectedLesson.timeSchedule ? new Date(selectedLesson.timeSchedule).toLocaleString() : 'Not Set'}
+                                <h5 className="text-[10px] font-bold text-slate-400 uppercase">Live Stream Schedule</h5>
+                                <p className="text-xs text-slate-700 font-bold">
+                                  {selectedLesson.timeSchedule ? new Date(selectedLesson.timeSchedule).toLocaleString() : 'Not Scheduled'}
                                 </p>
                               </div>
                             </div>
-                            <p className="text-xs text-gray-500 leading-relaxed">
-                              This lesson is stream-based. Access the official platform Meet room during the designated time.
+                            <p className="text-xs text-slate-500 leading-relaxed">
+                              This lesson is live stream-based. Access the official Google Meet room during the designated time.
                             </p>
                             <a
                               href={selectedLesson.meetLink || '#'}
                               target="_blank"
                               rel="noreferrer"
-                              className="inline-flex items-center gap-1.5 px-4 py-2 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded text-xs font-black uppercase tracking-widest hover:bg-cyan-500/30"
+                              className="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 text-white rounded text-xs font-bold hover:bg-indigo-700 shadow-sm"
                             >
                               JOIN GOOGLE MEET ROOM <ExternalLink className="w-4 h-4" />
                             </a>
@@ -314,25 +314,25 @@ export default function StudentDashboard() {
                         {selectedLesson.lessonType === 'offline' && (
                           <div className="space-y-4">
                             <div className="flex items-center gap-3">
-                              <MapPin className="w-10 h-10 text-emerald-400" />
+                              <MapPin className="w-10 h-10 text-indigo-600" />
                               <div>
-                                <h5 className="text-xs font-black text-gray-400 uppercase">Offline Lab Location</h5>
-                                <p className="text-xs text-emerald-400 font-semibold">
+                                <h5 className="text-[10px] font-bold text-slate-400 uppercase">Offline Lab Address</h5>
+                                <p className="text-xs text-slate-700 font-bold">
                                   {selectedLesson.locationDetails || 'Main Auditorium'}
                                 </p>
                               </div>
                             </div>
                             <div className="flex items-center gap-3">
-                              <Calendar className="w-10 h-10 text-gray-500" />
+                              <Calendar className="w-10 h-10 text-slate-400" />
                               <div>
-                                <h5 className="text-xs font-black text-gray-400 uppercase">Schedule Detail</h5>
-                                <p className="text-xs text-gray-300 font-semibold">
+                                <h5 className="text-[10px] font-bold text-slate-400 uppercase">Schedule Detail</h5>
+                                <p className="text-xs text-slate-700 font-bold">
                                   {selectedLesson.timeSchedule ? new Date(selectedLesson.timeSchedule).toLocaleString() : 'Not Set'}
                                 </p>
                               </div>
                             </div>
-                            <p className="text-xs text-gray-500 leading-relaxed">
-                              This is an offline session. Please make sure to be in attendance at the location details specified above.
+                            <p className="text-xs text-slate-500 leading-relaxed">
+                              This is an offline classroom session. Please attend in person at the location specified above.
                             </p>
                           </div>
                         )}
@@ -341,23 +341,23 @@ export default function StudentDashboard() {
                       {/* Tutors Assigned details */}
                       {selectedLesson.tutors && selectedLesson.tutors.length > 0 && (
                         <div className="space-y-2">
-                          <h5 className="text-xs font-black uppercase text-gray-500 tracking-wider">
-                            Assigned Tutors
+                          <h5 className="text-xs font-bold uppercase text-slate-400 tracking-wider">
+                            Assigned Instructors
                           </h5>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {selectedLesson.tutors.map((t: any, idx: number) => (
                               <div
                                 key={idx}
-                                className="bg-white/5 border border-white/10 p-3 rounded flex items-center gap-3"
+                                className="bg-white border border-slate-200 p-3 rounded-lg flex items-center gap-3 shadow-sm"
                               >
                                 <img
                                   src={t.imageUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${t.name}`}
                                   alt={t.name}
-                                  className="w-8 h-8 rounded-full border border-neonCyan/30"
+                                  className="w-8 h-8 rounded-full border border-indigo-100"
                                 />
                                 <div>
-                                  <div className="text-xs font-bold text-white uppercase">{t.name}</div>
-                                  <div className="text-[10px] text-gray-500">{t.email}</div>
+                                  <div className="text-xs font-bold text-slate-800">{t.name}</div>
+                                  <div className="text-[10px] text-slate-500">{t.email}</div>
                                 </div>
                               </div>
                             ))}
@@ -367,27 +367,27 @@ export default function StudentDashboard() {
 
                       {/* Interactive Quiz Verification Widget */}
                       {selectedLesson.quizQuestion && (
-                        <div className="glassmorphic p-6 rounded-lg border border-white/10 space-y-4">
-                          <h5 className="text-xs font-black uppercase text-neonCyan tracking-wider flex items-center gap-1.5">
-                            Interactive Quiz Verification
+                        <div className="bg-indigo-50/50 p-6 rounded-xl border border-indigo-100 space-y-4">
+                          <h5 className="text-xs font-bold uppercase text-indigo-700 tracking-wider flex items-center gap-1.5">
+                            Quiz Progress Check
                           </h5>
-                          <p className="text-xs text-white font-bold">{selectedLesson.quizQuestion}</p>
+                          <p className="text-xs text-slate-800 font-semibold">{selectedLesson.quizQuestion}</p>
                           <div className="space-y-2">
                             {selectedLesson.quizOptions?.map((option: string, oIdx: number) => {
                               const isSelected = quizSelectedOption === oIdx;
-                              let btnClass = "w-full text-left p-3 rounded text-xs transition-all border ";
+                              let btnClass = "w-full text-left p-3 rounded-lg text-xs transition-all border cursor-pointer ";
                               if (quizChecked) {
                                 if (oIdx === selectedLesson.quizCorrectIndex) {
-                                  btnClass += "bg-emerald-500/20 border-emerald-500 text-emerald-400 font-bold";
+                                  btnClass += "bg-emerald-50 border-emerald-300 text-emerald-700 font-semibold";
                                 } else if (isSelected) {
-                                  btnClass += "bg-red-500/20 border-red-500 text-red-400";
+                                  btnClass += "bg-red-50 border-red-200 text-red-600";
                                 } else {
-                                  btnClass += "bg-white/5 border-white/10 text-gray-500";
+                                  btnClass += "bg-white border-slate-200 text-slate-400";
                                 }
                               } else {
                                 btnClass += isSelected 
-                                  ? "bg-neonCyan/10 border-neonCyan text-neonCyan font-bold"
-                                  : "bg-white/5 border-white/10 text-gray-300 hover:border-white/20";
+                                  ? "bg-indigo-600 border-indigo-600 text-white font-semibold"
+                                  : "bg-white border-slate-200 text-slate-700 hover:border-slate-300";
                               }
                               return (
                                 <button
@@ -408,21 +408,21 @@ export default function StudentDashboard() {
                               type="button"
                               disabled={quizSelectedOption === null}
                               onClick={() => {
-                                setQuizChecked(true);
-                                if (quizSelectedOption === selectedLesson.quizCorrectIndex) {
-                                  setQuizPassed(true);
-                                }
+                                  setQuizChecked(true);
+                                  if (quizSelectedOption === selectedLesson.quizCorrectIndex) {
+                                    setQuizPassed(true);
+                                  }
                               }}
-                              className="w-full py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold uppercase text-white rounded transition-all disabled:opacity-50"
+                              className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-xs font-bold uppercase text-white rounded-lg shadow-sm transition-all disabled:opacity-50 cursor-pointer"
                             >
-                              Submit Verification Answer
+                              Verify Answer
                             </button>
                           ) : (
                             <div className="flex justify-between items-center text-xs">
                               {quizPassed ? (
-                                <span className="text-emerald-400 font-bold">✓ Pattern Verified! Progress unlocked.</span>
+                                <span className="text-emerald-700 font-bold">✓ Response verified. Progression unlocked.</span>
                               ) : (
-                                <span className="text-red-400 font-bold">✗ Pattern Failed. Please retry.</span>
+                                <span className="text-red-600 font-bold">✗ Incorrect answer. Please try again.</span>
                               )}
                               <button
                                 type="button"
@@ -431,7 +431,7 @@ export default function StudentDashboard() {
                                   setQuizChecked(false);
                                   setQuizPassed(false);
                                 }}
-                                className="text-neonCyan hover:underline font-bold uppercase tracking-wider text-[10px]"
+                                className="text-indigo-600 hover:underline font-bold uppercase tracking-wider text-[10px] cursor-pointer"
                               >
                                 Retry Quiz
                               </button>
@@ -441,11 +441,11 @@ export default function StudentDashboard() {
                       )}
 
                       {/* Completion Toggle */}
-                      <div className="pt-4 border-t border-white/5 flex items-center justify-between">
-                        <span className="text-xs text-gray-400 uppercase font-bold tracking-wider">
+                      <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <span className="text-xs text-slate-500 font-semibold">
                           {selectedLesson.quizQuestion && !progress?.completedLessons?.includes(selectedLesson.lessonId) && !quizPassed 
-                            ? 'Complete Quiz to Evaluate' 
-                            : 'Confirm lesson evaluation'}
+                            ? 'Complete Quiz to evaluate' 
+                            : 'Verify lesson to continue'}
                         </span>
                         <button
                           onClick={() =>
@@ -455,19 +455,19 @@ export default function StudentDashboard() {
                             )
                           }
                           disabled={selectedLesson.quizQuestion && !progress?.completedLessons?.includes(selectedLesson.lessonId) && !quizPassed}
-                          className={`px-4 py-2 rounded text-xs font-black uppercase tracking-widest border transition-all flex items-center gap-2 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
+                          className={`px-4 py-2 rounded text-xs font-bold uppercase tracking-wider border transition-all flex items-center gap-2 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
                             progress?.completedLessons?.includes(selectedLesson.lessonId)
-                              ? 'bg-neonCyan/20 text-neonCyan border-neonCyan/30'
-                              : 'bg-white/5 text-gray-400 border-white/10 hover:border-white/20'
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                              : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
                           }`}
                         >
                           {progress?.completedLessons?.includes(selectedLesson.lessonId) ? (
                             <>
-                              Completed <CheckCircle className="w-4 h-4" />
+                              Completed <CheckCircle className="w-4 h-4 text-emerald-500" />
                             </>
                           ) : (
                             <>
-                              Mark As Completed <Circle className="w-4 h-4" />
+                              Mark Completed <Circle className="w-4 h-4" />
                             </>
                           )}
                         </button>
@@ -475,8 +475,8 @@ export default function StudentDashboard() {
                     </div>
                   ) : (
                     <div className="text-center py-12">
-                      <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">
-                        Please select a lesson blueprint from the list to begin.
+                      <p className="text-xs text-slate-400 font-bold uppercase">
+                        Select a lesson to start learning
                       </p>
                     </div>
                   )}
@@ -484,50 +484,51 @@ export default function StudentDashboard() {
               </div>
             </div>
           ) : (
-            <div className="glassmorphic p-12 text-center rounded-lg border border-white/10">
-              <p className="text-sm text-gray-400 uppercase tracking-widest font-bold">
-                Please select or purchase a course to operate the player.
+            <div className="bg-white p-12 text-center rounded-lg border border-slate-200 shadow-sm">
+              <p className="text-sm text-slate-400 font-bold uppercase">
+                Please select a course to load the syllabus.
               </p>
             </div>
           )}
         </div>
       </main>
+
       {/* Certificate Modal */}
       {showCertificate && selectedCourse && (
-        <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-6">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-6">
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
+            initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="w-full max-w-2xl bg-gradient-to-br from-indigo-950/40 to-slate-900/60 border border-neonMagenta/40 rounded-xl p-8 text-center space-y-6 shadow-neonMagenta/20 shadow-2xl relative"
+            className="w-full max-w-2xl bg-white border-8 border-double border-amber-800 rounded-xl p-8 md:p-12 text-center space-y-6 shadow-2xl relative"
           >
             <div className="absolute top-4 right-4">
               <button
                 onClick={() => setShowCertificate(false)}
-                className="text-gray-500 hover:text-white font-bold text-xs uppercase cursor-pointer"
+                className="text-slate-400 hover:text-slate-700 font-bold text-xs uppercase cursor-pointer"
               >
-                Close Terminal
+                Close [x]
               </button>
             </div>
             
-            <div className="mx-auto w-16 h-16 rounded-full bg-neonMagenta/10 border border-neonMagenta flex items-center justify-center animate-pulse">
-              <Award className="w-8 h-8 text-neonMagenta" />
+            <div className="mx-auto w-16 h-16 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center">
+              <Award className="w-8 h-8 text-amber-700" />
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-[10px] text-neonMagenta font-black uppercase tracking-widest">Graduation Credential</h3>
-              <h2 className="text-2xl font-black uppercase text-white tracking-wide">Edemy Metaverse Certification</h2>
+              <h3 className="text-xs text-amber-700 font-bold uppercase tracking-widest font-mono">Certificate of Graduation</h3>
+              <h2 className="text-3xl font-serif font-black text-slate-900">EDEMY</h2>
             </div>
 
-            <div className="border-y border-white/5 py-8 space-y-4">
-              <p className="text-[11px] text-gray-500 uppercase tracking-widest font-bold">This is to verify that student node</p>
-              <h4 className="text-2xl font-extrabold text-neonCyan uppercase tracking-wide">{user?.name}</h4>
-              <p className="text-[11px] text-gray-500 uppercase tracking-widest font-bold">has successfully synthesized the core syllabus of</p>
-              <h5 className="text-lg font-bold text-white uppercase">{selectedCourse.courseTitle}</h5>
+            <div className="border-y border-slate-100 py-8 space-y-4">
+              <p className="text-xs text-slate-400 italic">This is to verify that student</p>
+              <h4 className="text-2xl font-bold text-indigo-700 font-serif">{user?.name}</h4>
+              <p className="text-xs text-slate-400 italic">has successfully completed the complete requirements for</p>
+              <h5 className="text-lg font-bold text-slate-900 uppercase font-sans">{selectedCourse.courseTitle}</h5>
             </div>
 
-            <div className="flex justify-between items-center text-[9px] text-gray-600 font-mono">
-              <span>DEPT: WEB METAVERSE</span>
-              <span>HASH: SHA-256#0x{Math.random().toString(16).substring(2, 10).toUpperCase()}</span>
+            <div className="flex justify-between items-center text-[10px] text-slate-400 font-mono">
+              <span>ISSUED BY: EDEMY EDUCATION</span>
+              <span>VERIFICATION ID: #{Math.random().toString(36).substring(2, 10).toUpperCase()}</span>
             </div>
           </motion.div>
         </div>

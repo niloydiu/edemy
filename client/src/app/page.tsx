@@ -27,111 +27,134 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-slate-50">
       <Navbar />
-
-      <main className="flex-1 flex flex-col items-center justify-center max-w-7xl mx-auto px-6 py-20">
+      <main className="flex-1 bg-white">
         {/* Hero Section */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="text-center max-w-3xl flex flex-col items-center gap-6"
-        >
-          <motion.div
-            variants={itemVariants}
-            className="flex items-center gap-2 bg-neonCyan/10 border border-neonCyan/30 text-neonCyan px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-widest animate-neon-pulse"
-          >
-            <Cpu className="w-4 h-4" /> Systems Operational: v4.2
-          </motion.div>
+        <section className="max-w-7xl mx-auto px-6 py-20 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="lg:col-span-7 space-y-6">
+            <div className="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-100 text-indigo-700 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider">
+              <Zap className="w-4 h-4" /> Structured Hybrid Learning Platform
+            </div>
+            
+            <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 leading-tight tracking-tight">
+              Learn without limits. Start your <span className="text-indigo-600">Edemy Journey</span>
+            </h1>
+            
+            <p className="text-slate-600 md:text-lg max-w-xl leading-relaxed">
+              Unlock a world of possibilities with PDF resources, live online streaming meetups, physical classroom sessions, and direct mentor guidance.
+            </p>
 
-          <motion.h1
-            variants={itemVariants}
-            className="text-5xl md:text-7xl font-black leading-tight tracking-tight uppercase"
-          >
-            Empower Your Mind in the{' '}
-            <span className="bg-gradient-to-r from-neonCyan via-neonPurple to-neonMagenta bg-clip-text text-transparent cyber-glow font-extrabold">
-              Edemy Metaverse
-            </span>
-          </motion.h1>
+            <div className="flex flex-wrap gap-4 pt-2">
+              <Link
+                href="/courses"
+                className="px-8 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-md shadow transition-all flex items-center gap-2"
+              >
+                Explore Courses <ArrowRight className="w-5 h-5" />
+              </Link>
+              <Link
+                href="/auth/login"
+                className="px-8 py-3.5 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold rounded-md transition-all"
+              >
+                Join Student Portal
+              </Link>
+            </div>
+          </div>
 
-          <motion.p
-            variants={itemVariants}
-            className="text-gray-400 md:text-lg tracking-wide max-w-2xl"
-          >
-            Access interactive online & offline courses, track progression in real-time, message top-tier tutors, and connect parental terminals for continuous evaluation.
-          </motion.p>
-
-          <motion.div variants={itemVariants} className="flex gap-4 mt-4">
-            <Link
-              href="/courses"
-              className="px-8 py-4 bg-gradient-to-r from-neonCyan to-neonPurple hover:from-neonPurple hover:to-neonCyan text-black font-extrabold rounded-md shadow-neon flex items-center gap-2 transition-all hover:scale-105"
-            >
-              BROWSE CATALOG <ArrowRight className="w-5 h-5" />
-            </Link>
-            <Link
-              href="/auth/login"
-              className="px-8 py-4 glassmorphic hover:bg-white/5 border border-white/10 text-white font-extrabold rounded-md transition-all flex items-center gap-2"
-            >
-              INITIALIZE PORTAL
-            </Link>
-          </motion.div>
-        </motion.div>
+          <div className="lg:col-span-5 relative hidden lg:block">
+            <div className="absolute -inset-1 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 opacity-20 blur-xl"></div>
+            <div className="relative bg-slate-50 border border-slate-200 p-8 rounded-2xl shadow-xl space-y-6">
+              <div className="flex items-center gap-4">
+                <img
+                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=150&auto=format&fit=crop&q=60"
+                  alt="Students learning"
+                  className="w-16 h-16 rounded-full border-2 border-indigo-500 object-cover"
+                />
+                <div>
+                  <h4 className="font-bold text-slate-900 text-sm">Interactive Syllabus</h4>
+                  <p className="text-xs text-slate-500">Live streams & physical classes</p>
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="bg-white p-3 rounded-lg border border-slate-100 flex items-center justify-between text-xs">
+                  <span className="font-semibold text-slate-700">Digital Classroom Meet</span>
+                  <span className="text-indigo-600 font-bold">14:00 Today</span>
+                </div>
+                <div className="bg-white p-3 rounded-lg border border-slate-100 flex items-center justify-between text-xs">
+                  <span className="font-semibold text-slate-700">Structured Lesson PDF</span>
+                  <span className="text-emerald-600 font-bold">Unlocked</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* Features Grid */}
-        <motion.section
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full mt-32"
-        >
-          <div className="glassmorphic glassmorphic-hover p-8 rounded-lg flex flex-col gap-4">
-            <Compass className="w-12 h-12 text-neonCyan" />
-            <h3 className="text-xl font-bold tracking-wider uppercase text-neonCyan">Hybrid Curriculums</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">
-              Take PDF reference courses, access web references, attend interactive online Google Meet streams or locate physical offline lab classes nearby.
-            </p>
+        <section className="bg-slate-50 border-y border-slate-200 py-20">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center max-w-xl mx-auto mb-16 space-y-3">
+              <h2 className="text-3xl font-bold text-slate-900">Why choose Edemy?</h2>
+              <p className="text-slate-600 text-sm">Our platform combines the best features of Coursera and Udemy to make learning interactive and manageable.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="clean-card p-8 bg-white space-y-4">
+                <div className="w-12 h-12 rounded-lg bg-indigo-50 flex items-center justify-center">
+                  <Compass className="w-6 h-6 text-indigo-600" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-900">Hybrid Classroom Formats</h3>
+                <p className="text-slate-600 text-sm leading-relaxed">
+                  Attend offline classes with physical location support, or online live streams using Google Meet, PDF materials, and direct links.
+                </p>
+              </div>
+
+              <div className="clean-card p-8 bg-white space-y-4">
+                <div className="w-12 h-12 rounded-lg bg-indigo-50 flex items-center justify-center">
+                  <MessageSquare className="w-6 h-6 text-indigo-600" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-900">Direct Instructor Chat</h3>
+                <p className="text-slate-600 text-sm leading-relaxed">
+                  Chat directly with your course instructors in real-time. Discuss course materials, assignments, or ask general career questions.
+                </p>
+              </div>
+
+              <div className="clean-card p-8 bg-white space-y-4">
+                <div className="w-12 h-12 rounded-lg bg-indigo-50 flex items-center justify-center">
+                  <ShieldCheck className="w-6 h-6 text-indigo-600" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-900">Parental Progress Feed</h3>
+                <p className="text-slate-600 text-sm leading-relaxed">
+                  Parents can link accounts to inspect purchase history, check course completion ratios, and get audit updates.
+                </p>
+              </div>
+            </div>
           </div>
-          <div className="glassmorphic glassmorphic-hover p-8 rounded-lg flex flex-col gap-4">
-            <MessageSquare className="w-12 h-12 text-neonPurple" />
-            <h3 className="text-xl font-bold tracking-wider uppercase text-neonPurple">Active Tutor Chats</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">
-              Connect directly with industry leading tutors in real-time. Tutors can view student logs and schedule classes seamlessly.
-            </p>
-          </div>
-          <div className="glassmorphic glassmorphic-hover p-8 rounded-lg flex flex-col gap-4">
-            <ShieldCheck className="w-12 h-12 text-neonMagenta" />
-            <h3 className="text-xl font-bold tracking-wider uppercase text-neonMagenta">Parental Terminals</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">
-              Link parental accounts to student profiles, allowing instant visibility of child purchase histories and progress ratios.
-            </p>
-          </div>
-        </motion.section>
+        </section>
 
         {/* Quick Stats */}
-        <section className="w-full mt-32 border-y border-white/5 py-12 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <section className="max-w-7xl mx-auto px-6 py-20 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           <div>
-            <div className="text-4xl font-extrabold text-neonCyan cyber-glow">12,000+</div>
-            <div className="text-xs text-gray-500 uppercase font-bold tracking-widest mt-2">Active Students</div>
+            <div className="text-4xl font-extrabold text-indigo-600">12,000+</div>
+            <div className="text-xs text-slate-500 uppercase font-bold tracking-wider mt-2">Active Students</div>
           </div>
           <div>
-            <div className="text-4xl font-extrabold text-neonPurple cyber-glow">180+</div>
-            <div className="text-xs text-gray-500 uppercase font-bold tracking-widest mt-2">Certified Tutors</div>
+            <div className="text-4xl font-extrabold text-indigo-600">180+</div>
+            <div className="text-xs text-slate-500 uppercase font-bold tracking-wider mt-2">Certified Tutors</div>
           </div>
           <div>
-            <div className="text-4xl font-extrabold text-neonMagenta cyber-glow">99.8%</div>
-            <div className="text-xs text-gray-500 uppercase font-bold tracking-widest mt-2">Completion Rate</div>
+            <div className="text-4xl font-extrabold text-indigo-600">99.8%</div>
+            <div className="text-xs text-slate-500 uppercase font-bold tracking-wider mt-2">Completion Rate</div>
           </div>
           <div>
-            <div className="text-4xl font-extrabold text-yellow-400 cyber-glow">4.9/5</div>
-            <div className="text-xs text-gray-500 uppercase font-bold tracking-widest mt-2">Average Rating</div>
+            <div className="text-4xl font-extrabold text-indigo-600">4.9/5</div>
+            <div className="text-xs text-slate-500 uppercase font-bold tracking-wider mt-2">Average Rating</div>
           </div>
         </section>
       </main>
 
-      <footer className="border-t border-white/5 py-8 text-center text-xs text-gray-600 uppercase tracking-widest">
-        &copy; {new Date().getFullYear()} EDEMY.OS. All neural interfaces reserved.
+      <footer className="border-t border-slate-200 bg-white py-12 text-center text-xs text-slate-500 font-semibold uppercase tracking-wider">
+        &copy; {new Date().getFullYear()} EDEMY Platforms. All rights reserved.
       </footer>
     </div>
   );

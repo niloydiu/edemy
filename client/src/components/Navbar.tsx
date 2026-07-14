@@ -20,41 +20,41 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="glassmorphic sticky top-0 z-50 px-6 py-4 shadow-neonPurple/10 shadow-md">
+    <nav className="bg-white border-b border-slate-200 sticky top-0 z-50 px-6 py-4 shadow-sm">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 text-2xl font-extrabold tracking-wider bg-gradient-to-r from-neonCyan via-neonPurple to-neonMagenta bg-clip-text text-transparent cyber-glow">
-          <GraduationCap className="w-8 h-8 text-neonCyan" />
-          EDEMY.OS
+        <Link href="/" className="flex items-center gap-2 text-2xl font-extrabold tracking-tight text-indigo-600 hover:opacity-90">
+          <GraduationCap className="w-8 h-8 text-indigo-600" />
+          EDEMY
         </Link>
 
         <div className="hidden md:flex items-center gap-6">
-          <Link href="/courses" className="text-gray-300 hover:text-neonCyan transition-all text-sm font-semibold tracking-wide">
+          <Link href="/courses" className="text-slate-600 hover:text-indigo-600 transition-all text-sm font-semibold tracking-wide">
             CATALOG
           </Link>
           {user && (
             <>
               {user.role === 'student' && (
-                <Link href="/dashboard/student" className="text-gray-300 hover:text-neonCyan transition-all text-sm font-semibold tracking-wide flex items-center gap-1">
-                  <Award className="w-4 h-4" /> STUDENT
+                <Link href="/dashboard/student" className="text-slate-600 hover:text-indigo-600 transition-all text-sm font-semibold tracking-wide flex items-center gap-1.5">
+                  <Award className="w-4 h-4 text-indigo-500" /> Student Profile
                 </Link>
               )}
               {user.role === 'teacher' && (
-                <Link href="/dashboard/tutor" className="text-gray-300 hover:text-neonCyan transition-all text-sm font-semibold tracking-wide flex items-center gap-1">
-                  <Calendar className="w-4 h-4" /> TUTOR WORKSPACE
+                <Link href="/dashboard/tutor" className="text-slate-600 hover:text-indigo-600 transition-all text-sm font-semibold tracking-wide flex items-center gap-1.5">
+                  <Calendar className="w-4 h-4 text-indigo-500" /> Instructor Panel
                 </Link>
               )}
               {user.role === 'parent' && (
-                <Link href="/dashboard/parent" className="text-gray-300 hover:text-neonCyan transition-all text-sm font-semibold tracking-wide flex items-center gap-1">
-                  <Users className="w-4 h-4" /> PARENT PORTAL
+                <Link href="/dashboard/parent" className="text-slate-600 hover:text-indigo-600 transition-all text-sm font-semibold tracking-wide flex items-center gap-1.5">
+                  <Users className="w-4 h-4 text-indigo-500" /> Parent Portal
                 </Link>
               )}
               {user.role === 'admin' && (
-                <a href="http://localhost:3001" className="text-gray-300 hover:text-neonCyan transition-all text-sm font-semibold tracking-wide flex items-center gap-1">
-                  <Shield className="w-4 h-4" /> ADMIN PANEL
+                <a href="http://localhost:3001" className="text-slate-600 hover:text-indigo-600 transition-all text-sm font-semibold tracking-wide flex items-center gap-1.5">
+                  <Shield className="w-4 h-4 text-indigo-500" /> Admin
                 </a>
               )}
-              <Link href="/chat" className="text-gray-300 hover:text-neonCyan transition-all text-sm font-semibold tracking-wide flex items-center gap-1">
-                <MessageSquare className="w-4 h-4" /> CHAT
+              <Link href="/chat" className="text-slate-600 hover:text-indigo-600 transition-all text-sm font-semibold tracking-wide flex items-center gap-1.5">
+                <MessageSquare className="w-4 h-4 text-indigo-500" /> Chat Messages
               </Link>
             </>
           )}
@@ -63,20 +63,20 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           {user ? (
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full">
+              <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-full">
                 <img
                   src={user.imageUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.name}`}
                   alt={user.name}
-                  className="w-6 h-6 rounded-full border border-neonCyan/50"
+                  className="w-6 h-6 rounded-full border border-indigo-100"
                 />
-                <span className="text-xs font-semibold text-neonCyan capitalize">{user.role}</span>
+                <span className="text-xs font-semibold text-slate-700 capitalize">{user.role}</span>
               </div>
               <button
                 onClick={() => {
                   logout();
                   router.push('/');
                 }}
-                className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 hover:border-red-500/40 rounded-full transition-all cursor-pointer"
+                className="p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full transition-all cursor-pointer"
                 title="Log Out"
               >
                 <LogOut className="w-4 h-4" />
@@ -85,38 +85,38 @@ export default function Navbar() {
           ) : (
             <Link
               href="/auth/login"
-              className="px-4 py-2 bg-gradient-to-r from-neonCyan to-neonPurple text-black text-sm font-extrabold rounded-md shadow-neon transition-all hover:scale-105 duration-200"
+              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-md shadow-sm transition-all duration-150"
             >
-              ACCESS CORE
+              Sign In
             </Link>
           )}
 
           {/* Quick Demo Switcher Panel */}
-          <div className="flex items-center gap-1 ml-4 bg-white/5 p-1 rounded-md border border-white/10">
-            <span className="text-[10px] text-gray-500 font-bold px-1 uppercase hidden lg:inline">Quick Link:</span>
+          <div className="flex items-center gap-1 ml-4 bg-slate-100 p-1 rounded-md border border-slate-200">
+            <span className="text-[9px] text-slate-500 font-bold px-1.5 uppercase hidden lg:inline">Bypass Profile:</span>
             <button
               onClick={() => handleDemoSwitch('student')}
-              className="text-[10px] bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/20 px-2 py-0.5 rounded transition-all font-bold"
+              className="text-[9px] bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-2 py-1 rounded transition-all font-bold"
             >
-              STUDENT
+              Student
             </button>
             <button
               onClick={() => handleDemoSwitch('teacher')}
-              className="text-[10px] bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/20 px-2 py-0.5 rounded transition-all font-bold"
+              className="text-[9px] bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-2 py-1 rounded transition-all font-bold"
             >
-              TUTOR
+              Instructor
             </button>
             <button
               onClick={() => handleDemoSwitch('parent')}
-              className="text-[10px] bg-pink-500/10 hover:bg-pink-500/20 text-pink-400 border border-pink-500/20 px-2 py-0.5 rounded transition-all font-bold"
+              className="text-[9px] bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-2 py-1 rounded transition-all font-bold"
             >
-              PARENT
+              Parent
             </button>
             <button
               onClick={() => handleDemoSwitch('admin')}
-              className="text-[10px] bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded transition-all font-bold"
+              className="text-[9px] bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-2 py-1 rounded transition-all font-bold"
             >
-              ADMIN
+              Admin
             </button>
           </div>
         </div>
