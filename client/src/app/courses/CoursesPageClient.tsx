@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import { useAuth } from '@/context/AuthContext';
 import { Star, Clock, Users, Search, Filter, ChevronDown, BookOpen, SlidersHorizontal, X, Heart } from 'lucide-react';
@@ -56,6 +56,8 @@ function StarRating({ rating }: { rating: number }) {
 export default function CoursesPageClient({ initialCourses }: { initialCourses: any[] }) {
   const { user, api, refreshProfile } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const typeParam = searchParams.get('type') || 'all';
 
   const [courses, setCourses] = useState<any[]>(initialCourses);
   const [filtered, setFiltered] = useState<any[]>(initialCourses);
@@ -71,6 +73,13 @@ export default function CoursesPageClient({ initialCourses }: { initialCourses: 
 
   const applyFilters = useCallback(() => {
     let result = [...courses];
+
+    // Type query param filter
+    if (typeParam === 'online') {
+      result = result.filter(c => (c.lessons || []).some((l: any) => l.lessonType === 'online'));
+    } else if (typeParam === 'offline') {
+      result = result.filter(c => (c.lessons || []).some((l: any) => l.lessonType === 'offline'));
+    }
 
     // Search query
     if (search) {
@@ -135,7 +144,7 @@ export default function CoursesPageClient({ initialCourses }: { initialCourses: 
     }
 
     setFiltered(result);
-  }, [courses, search, category, level, priceRange, ratingFilter, durationFilter, sort]);
+  }, [courses, search, category, level, priceRange, ratingFilter, durationFilter, sort, typeParam]);
 
   useEffect(() => {
     applyFilters();

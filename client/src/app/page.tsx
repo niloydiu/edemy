@@ -42,27 +42,27 @@ const TESTIMONIALS = [
 
 const FEATURES = [
   {
-    icon: Monitor, title: 'Live Online Classes', color: 'text-indigo-600', bg: 'bg-indigo-50',
+    icon: Monitor, title: 'Live Online Classes', color: 'text-indigo-600 dark:text-indigo-400', bg: 'bg-indigo-50 dark:bg-indigo-950/30',
     desc: 'Join live video sessions with Google Meet integration. Interactive, recorded, and available on-demand.',
   },
   {
-    icon: MapPin, title: 'Physical Classrooms', color: 'text-emerald-600', bg: 'bg-emerald-50',
+    icon: MapPin, title: 'Physical Classrooms', color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-950/30',
     desc: 'Attend real in-person workshops at our learning centers with hands-on labs and group projects.',
   },
   {
-    icon: FileText, title: 'PDF & Study Materials', color: 'text-amber-600', bg: 'bg-amber-50',
+    icon: FileText, title: 'PDF & Study Materials', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-950/30',
     desc: 'Download comprehensive PDF resources, reference guides, and cheat sheets for every lesson.',
   },
   {
-    icon: BarChart2, title: 'Progress Tracking', color: 'text-purple-600', bg: 'bg-purple-50',
+    icon: BarChart2, title: 'Progress Tracking', color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-50 dark:bg-purple-950/30',
     desc: 'Track lesson completion, quiz scores, and certificates. Parents can monitor their child\'s learning.',
   },
   {
-    icon: MessageSquare, title: 'Tutor Direct Chat', color: 'text-rose-600', bg: 'bg-rose-50',
+    icon: MessageSquare, title: 'Tutor Direct Chat', color: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-50 dark:bg-rose-950/30',
     desc: 'Message instructors directly for personalized guidance, career advice, and code reviews.',
   },
   {
-    icon: Award, title: 'Verified Certificates', color: 'text-cyan-600', bg: 'bg-cyan-50',
+    icon: Award, title: 'Verified Certificates', color: 'text-cyan-600 dark:text-cyan-400', bg: 'bg-cyan-50 dark:bg-cyan-950/30',
     desc: 'Earn shareable completion certificates recognized by top employers in 50+ countries.',
   },
 ];
@@ -389,10 +389,10 @@ export default function Home() {
                 <div className={`w-12 h-12 ${f.bg} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                   <f.icon className={`w-6 h-6 ${f.color}`} />
                 </div>
-                <h3 className="font-bold text-slate-900 mb-2">{f.title}</h3>
-                <p className="text-slate-500 text-sm leading-relaxed mb-2">{f.desc}</p>
+                <h3 className="font-bold text-slate-900 dark:text-white mb-2">{f.title}</h3>
+                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-2">{f.desc}</p>
                 {f.title === 'Progress Tracking' && (
-                  <Link href="/dashboard-preview" className="text-xs text-indigo-650 hover:underline font-bold inline-flex items-center gap-1">
+                  <Link href="/dashboard-preview" className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-bold inline-flex items-center gap-1">
                     Try interactive preview &rarr;
                   </Link>
                 )}
@@ -422,7 +422,7 @@ export default function Home() {
               >
                 <div className="text-4xl lg:text-5xl font-black text-white">{s.value}</div>
                 <div className="text-indigo-100 font-semibold mt-1">{s.label}</div>
-                <div className="text-indigo-300 text-sm mt-0.5">{s.sub}</div>
+                <div className="text-indigo-305 text-indigo-200 text-sm mt-0.5">{s.sub}</div>
               </motion.div>
             ))}
           </div>
@@ -430,7 +430,7 @@ export default function Home() {
       </section>
 
       {/* ════════ TESTIMONIALS ════════ */}
-      <section className="py-20 bg-slate-50">
+      <section className="py-20 bg-slate-50 dark:bg-slate-900/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14 space-y-4">
             <p className="section-eyebrow justify-center">
@@ -450,12 +450,12 @@ export default function Home() {
                 className="card p-6 space-y-4"
               >
                 <StarRating rating={t.rating} />
-                <p className="text-slate-700 text-sm leading-relaxed italic">"{t.text}"</p>
-                <div className="flex items-center gap-3 pt-2 border-t border-slate-100">
-                  <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover border-2 border-indigo-100" />
+                <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed italic">"{t.text}"</p>
+                <div className="flex items-center gap-3 pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover border-2 border-indigo-100 dark:border-indigo-950" />
                   <div>
-                    <p className="font-semibold text-slate-900 text-sm">{t.name}</p>
-                    <p className="text-xs text-slate-500">{t.role}</p>
+                    <p className="font-semibold text-slate-900 dark:text-white text-sm">{t.name}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{t.role}</p>
                   </div>
                 </div>
               </motion.div>

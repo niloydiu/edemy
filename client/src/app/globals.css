@@ -13,6 +13,14 @@
   --header-bg: #ffffff;
   --footer-bg: #0f172a;
   --footer-text: #94a3b8;
+  --btn-secondary-bg: #ffffff;
+  --btn-secondary-text: #374151;
+  --btn-secondary-border: #d1d5db;
+  --btn-secondary-hover-bg: #f9fafb;
+  --btn-secondary-hover-border: #9ca3af;
+  --badge-gray-bg: #f3f4f6;
+  --badge-gray-text: #374151;
+  --divider-color: #e5e7eb;
 }
 
 .dark {
@@ -26,6 +34,14 @@
   --header-bg: #111827;
   --footer-bg: #030712;
   --footer-text: #6b7280;
+  --btn-secondary-bg: #1f2937;
+  --btn-secondary-text: #f1f5f9;
+  --btn-secondary-border: #374151;
+  --btn-secondary-hover-bg: #2d3748;
+  --btn-secondary-hover-border: #4a5568;
+  --badge-gray-bg: #1f2937;
+  --badge-gray-text: #e2e8f0;
+  --divider-color: #1f2937;
 }
 
 @layer base {
@@ -100,20 +116,20 @@
     justify-content: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    background: #ffffff;
-    color: #374151;
+    background: var(--btn-secondary-bg);
+    color: var(--btn-secondary-text);
     font-weight: 600;
     font-size: 0.9rem;
     border-radius: 8px;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--btn-secondary-border);
     cursor: pointer;
     transition: all 0.15s ease;
     text-decoration: none;
   }
 
   .btn-secondary:hover {
-    background: #f9fafb;
-    border-color: #9ca3af;
+    background: var(--btn-secondary-hover-bg);
+    border-color: var(--btn-secondary-hover-border);
   }
 
   .btn-ghost {
@@ -153,7 +169,7 @@
   .badge-green { background: #d1fae5; color: #065f46; }
   .badge-amber { background: #fef3c7; color: #92400e; }
   .badge-red { background: #fee2e2; color: #991b1b; }
-  .badge-gray { background: #f3f4f6; color: #374151; }
+  .badge-gray { background: var(--badge-gray-bg); color: var(--badge-gray-text); }
 
   /* === COURSE CARD === */
   .course-card {
@@ -274,7 +290,7 @@
   /* === PROGRESS BAR === */
   .progress-bar {
     width: 100%;
-    background: #e5e7eb;
+    background: var(--input-border);
     border-radius: 9999px;
     height: 8px;
     overflow: hidden;
@@ -373,7 +389,7 @@
   .divider {
     width: 100%;
     height: 1px;
-    background: #e5e7eb;
+    background: var(--divider-color);
     margin: 1.5rem 0;
   }
 }

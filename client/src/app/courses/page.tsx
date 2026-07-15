@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import CoursesPageClient from './CoursesPageClient';
 
 export const dynamic = 'force-dynamic';
@@ -24,5 +24,14 @@ async function getCourses() {
 
 export default async function CoursesPage() {
   const initialCourses = await getCourses();
-  return <CoursesPageClient initialCourses={initialCourses} />;
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-slate-300 border-t-indigo-650 rounded-full animate-spin"></div>
+      </div>
+    }>
+      <CoursesPageClient initialCourses={initialCourses} />
+    </Suspense>
+  );
 }
+

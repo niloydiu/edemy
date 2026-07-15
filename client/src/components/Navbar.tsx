@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import {
   BookOpen, LogOut, User, LayoutDashboard, Search,
@@ -13,6 +13,8 @@ export default function Navbar() {
   const { user, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const currentType = searchParams.get('type');
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -98,19 +100,24 @@ export default function Navbar() {
               { href: '/courses', label: 'Courses' },
               { href: '/courses?type=online', label: 'Live Classes' },
               { href: '/courses?type=offline', label: 'Workshops' },
-            ].map(link => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  pathname === link.href
-                    ? 'bg-indigo-50 text-indigo-700'
-                    : `${textClass} hover:bg-slate-100/50`
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            ].map(link => {
+              const isActive = link.href === '/courses'
+                ? pathname === '/courses' && !currentType
+                : pathname === '/courses' && currentType === (link.href.includes('online') ? 'online' : 'offline');
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    isActive
+                      ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 font-semibold'
+                      : `${textClass} hover:bg-slate-100/50 dark:hover:bg-slate-800/50`
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Right Side */}
@@ -157,10 +164,10 @@ export default function Navbar() {
                   </button>
 
                   {profileOpen && (
-                    <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-xl border border-slate-200 shadow-xl shadow-slate-200/60 overflow-hidden z-50">
-                      <div className="px-4 py-3 border-b border-slate-100">
-                        <p className="font-semibold text-sm text-slate-900 truncate">{user.name}</p>
-                        <p className="text-xs text-slate-500 truncate">{user.email}</p>
+                    <div className="absolute right-0 top-full mt-2 w-52 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-200/60 dark:shadow-none overflow-hidden z-50">
+                      <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800">
+                        <p className="font-semibold text-sm text-slate-900 dark:text-white truncate">{user.name}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user.email}</p>
                         <span className="mt-1.5 inline-block badge badge-primary capitalize">
                           {user.role}
                         </span>
@@ -169,7 +176,7 @@ export default function Navbar() {
                         <Link
                           href={getDashboardHref()}
                           onClick={() => setProfileOpen(false)}
-                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                         >
                           <LayoutDashboard className="w-4 h-4 text-slate-400" />
                           Dashboard
@@ -177,16 +184,16 @@ export default function Navbar() {
                         <Link
                           href="/profile"
                           onClick={() => setProfileOpen(false)}
-                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                         >
                           <User className="w-4 h-4 text-slate-400" />
                           Profile
                         </Link>
                       </div>
-                      <div className="border-t border-slate-100 py-1.5">
+                      <div className="border-t border-slate-100 dark:border-slate-800 py-1.5">
                         <button
                           onClick={() => { setProfileOpen(false); logout(); }}
-                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-rose-600 hover:bg-rose-50 transition-colors"
+                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-colors"
                         >
                           <LogOut className="w-4 h-4" />
                           Sign Out
@@ -232,16 +239,33 @@ export default function Navbar() {
       {menuOpen && (
         <div className="md:hidden bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 shadow-lg">
           <div className="max-w-7xl mx-auto px-4 py-4 space-y-1">
-            <Link href="/courses" onClick={() => setMenuOpen(false)}
-              className="block px-4 py-3 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800">Courses</Link>
-            <Link href="/courses?type=online" onClick={() => setMenuOpen(false)}
-              className="block px-4 py-3 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800">Live Classes</Link>
-            <Link href="/courses?type=offline" onClick={() => setMenuOpen(false)}
-              className="block px-4 py-3 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800">Workshops</Link>
+            {[
+              { href: '/courses', label: 'Courses' },
+              { href: '/courses?type=online', label: 'Live Classes' },
+              { href: '/courses?type=offline', label: 'Workshops' },
+            ].map(link => {
+              const isActive = link.href === '/courses'
+                ? pathname === '/courses' && !currentType
+                : pathname === '/courses' && currentType === (link.href.includes('online') ? 'online' : 'offline');
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMenuOpen(false)}
+                  className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                    isActive
+                      ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 font-semibold'
+                      : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
             {user ? (
               <>
                 <Link href={getDashboardHref()} onClick={() => setMenuOpen(false)}
-                  className="block px-4 py-3 rounded-lg text-sm font-medium text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40">My Dashboard</Link>
+                  className="block px-4 py-3 rounded-lg text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40">My Dashboard</Link>
                 <button onClick={() => { setMenuOpen(false); logout(); }}
                   className="block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20">Sign Out</button>
               </>
