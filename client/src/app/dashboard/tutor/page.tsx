@@ -65,13 +65,13 @@ export default function TutorDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors">
       <Navbar />
       <div className="pt-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-extrabold text-slate-900 uppercase">Tutor Dashboard</h1>
-            <p className="text-slate-500 text-xs mt-1 font-bold uppercase tracking-wider">Manage your courses and live schedules</p>
+            <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white uppercase">Tutor Dashboard</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs mt-1 font-bold uppercase tracking-wider">Manage your courses and live schedules</p>
           </div>
           <Link href="/dashboard/tutor/create-course" className="btn-primary uppercase text-xs font-bold tracking-wider">
             <Plus className="w-4 h-4" /> New Course
@@ -86,12 +86,12 @@ export default function TutorDashboard() {
             { icon: DollarSign, label: 'Est. Earnings', value: `$${totalEarnings.toLocaleString()}`, color: 'text-amber-600', bg: 'bg-amber-50' },
             { icon: Star, label: 'Avg Rating', value: avgRating, color: 'text-purple-600', bg: 'bg-purple-50' },
           ].map(s => (
-            <div key={s.label} className="card p-5 bg-white border border-slate-200 rounded-lg">
+            <div key={s.label} className="card p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg">
               <div className={`w-10 h-10 ${s.bg} rounded-xl flex items-center justify-center mb-3`}>
                 <s.icon className={`w-5 h-5 ${s.color}`} />
               </div>
-              <div className="text-2xl font-extrabold text-slate-900">{s.value}</div>
-              <div className="text-xs font-medium text-slate-500 mt-0.5">{s.label}</div>
+              <div className="text-2xl font-extrabold text-slate-900 dark:text-white">{s.value}</div>
+              <div className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">{s.label}</div>
             </div>
           ))}
         </div>
@@ -100,25 +100,25 @@ export default function TutorDashboard() {
           {/* My Courses */}
           <div className="lg:col-span-2">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-bold text-slate-900 text-sm uppercase tracking-wider">My Published Courses</h2>
+              <h2 className="font-bold text-slate-900 dark:text-white text-sm uppercase tracking-wider">My Published Courses</h2>
             </div>
             {loading ? (
               <div className="space-y-4">
                 {[...Array(3)].map((_, i) => (
-                  <div key={i} className="card p-4 flex gap-4 animate-pulse bg-white border rounded-lg">
-                    <div className="w-24 h-16 bg-slate-200 rounded-lg" />
+                  <div key={i} className="card p-4 flex gap-4 animate-pulse bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg">
+                    <div className="w-24 h-16 bg-slate-200 dark:bg-slate-800 rounded-lg" />
                     <div className="flex-1 space-y-2">
-                      <div className="h-4 bg-slate-200 rounded w-3/4" />
-                      <div className="h-3 bg-slate-200 rounded w-1/2" />
+                      <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-3/4" />
+                      <div className="h-3 bg-slate-200 dark:bg-slate-800 rounded w-1/2" />
                     </div>
                   </div>
                 ))}
               </div>
             ) : courses.length === 0 ? (
-              <div className="card p-10 text-center bg-white border rounded-lg">
-                <BookOpen className="w-12 h-12 text-slate-200 mx-auto mb-3" />
-                <h3 className="font-semibold text-slate-900 mb-1">No courses yet</h3>
-                <p className="text-slate-500 text-sm mb-4">Create your first course blueprint</p>
+              <div className="card p-10 text-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg">
+                <BookOpen className="w-12 h-12 text-slate-200 dark:text-slate-700 mx-auto mb-3" />
+                <h3 className="font-semibold text-slate-900 dark:text-white mb-1">No courses yet</h3>
+                <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">Create your first course blueprint</p>
                 <Link href="/dashboard/tutor/create-course" className="btn-primary text-xs uppercase font-bold tracking-wider">Create Course</Link>
               </div>
             ) : (
@@ -131,18 +131,18 @@ export default function TutorDashboard() {
                     : '4.8';
 
                   return (
-                    <div key={courseId} className="card p-4 flex gap-4 items-start bg-white border rounded-lg">
+                    <div key={courseId} className="card p-4 flex gap-4 items-start bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg">
                       <img
                         src={course.courseThumbnail || 'https://images.unsplash.com/photo-1587620962725-abab19836100?w=200&h=112&fit=crop'}
                         alt={course.courseTitle}
-                        className="w-28 h-16 object-cover rounded-lg flex-shrink-0 bg-slate-100 border"
+                        className="w-28 h-16 object-cover rounded-lg flex-shrink-0 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
                         onError={(e) => {
                           e.currentTarget.src = 'https://images.unsplash.com/photo-1587620962725-abab19836100?w=200&h=112&fit=crop';
                         }}
                       />
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-bold text-slate-900 text-sm line-clamp-1">{course.courseTitle}</h3>
-                        <div className="flex items-center gap-3 mt-1 text-xs text-slate-500">
+                        <h3 className="font-bold text-slate-900 dark:text-white text-sm line-clamp-1">{course.courseTitle}</h3>
+                        <div className="flex items-center gap-3 mt-1 text-xs text-slate-500 dark:text-slate-400">
                           <span className="flex items-center gap-1"><Users className="w-3 h-3" /> {students}</span>
                           <span className="flex items-center gap-1"><Star className="w-3 h-3" /> {avgR}</span>
                           <span className="flex items-center gap-1"><BookOpen className="w-3 h-3" /> {course.lessons?.length || 0} lessons</span>
@@ -153,16 +153,16 @@ export default function TutorDashboard() {
                             <Edit3 className="w-3 h-3" /> Edit
                           </Link>
                           <button onClick={() => handleDelete(courseId)}
-                            className="text-xs py-1.5 px-3 text-rose-600 border border-rose-200 rounded-lg hover:bg-rose-50 flex items-center gap-1 cursor-pointer font-bold uppercase tracking-wider">
+                            className="text-xs py-1.5 px-3 text-rose-600 border border-rose-200 dark:border-rose-900 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/20 flex items-center gap-1 cursor-pointer font-bold uppercase tracking-wider">
                             <Trash2 className="w-3 h-3" /> Delete
                           </button>
                           <Link href={`/courses/${courseId}`}
-                            className="text-xs py-1.5 px-3 text-indigo-600 border border-indigo-200 rounded-lg hover:bg-indigo-50 font-bold uppercase tracking-wider">
+                            className="text-xs py-1.5 px-3 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-950/20 font-bold uppercase tracking-wider">
                             View
                           </Link>
                         </div>
                       </div>
-                      <span className={`badge ${course.isPublished ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-600'} text-[10px] font-bold px-2 py-0.5 border rounded flex-shrink-0 uppercase`}>
+                      <span className={`badge ${course.isPublished ? 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'} text-[10px] font-bold px-2 py-0.5 border rounded flex-shrink-0 uppercase`}>
                         {course.isPublished ? 'Published' : 'Draft'}
                       </span>
                     </div>
@@ -174,29 +174,29 @@ export default function TutorDashboard() {
 
           {/* Upcoming Schedule */}
           <div>
-            <h2 className="font-bold text-slate-900 text-sm uppercase tracking-wider mb-4">Upcoming Sessions</h2>
+            <h2 className="font-bold text-slate-900 dark:text-white text-sm uppercase tracking-wider mb-4">Upcoming Sessions</h2>
             <div className="space-y-3">
               {schedule.length === 0 ? (
-                <div className="card p-6 text-center bg-white border rounded-lg">
-                  <Calendar className="w-10 h-10 text-slate-200 mx-auto mb-2" />
-                  <p className="text-slate-500 text-xs font-bold uppercase">No upcoming sessions</p>
+                <div className="card p-6 text-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg">
+                  <Calendar className="w-10 h-10 text-slate-200 dark:text-slate-700 mx-auto mb-2" />
+                  <p className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase">No upcoming sessions</p>
                 </div>
               ) : schedule.map((s, i) => (
-                <div key={i} className="card p-4 space-y-2 bg-white border rounded-lg">
+                <div key={i} className="card p-4 space-y-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-2">
                       {s.lessonType === 'online'
-                        ? <Monitor className="w-4 h-4 text-indigo-600" />
-                        : <MapPin className="w-4 h-4 text-emerald-600" />}
-                      <span className={`badge ${s.lessonType === 'online' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200'} text-[10px] border px-2 py-0.5 rounded font-bold uppercase`}>
+                        ? <Monitor className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                        : <MapPin className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />}
+                      <span className={`badge ${s.lessonType === 'online' ? 'bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800' : 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'} text-[10px] border px-2 py-0.5 rounded font-bold uppercase`}>
                         {s.lessonType}
                       </span>
                     </div>
-                    <span className="text-xs text-slate-400">{s.duration}min</span>
+                    <span className="text-xs text-slate-400 dark:text-slate-500">{s.duration}min</span>
                   </div>
-                  <h4 className="font-bold text-slate-900 text-sm line-clamp-1">{s.lessonTitle}</h4>
-                  <p className="text-xs text-slate-500 line-clamp-1">{s.courseTitle}</p>
-                  <div className="text-xs text-slate-400 flex items-center gap-1">
+                  <h4 className="font-bold text-slate-900 dark:text-white text-sm line-clamp-1">{s.lessonTitle}</h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1">{s.courseTitle}</p>
+                  <div className="text-xs text-slate-400 dark:text-slate-500 flex items-center gap-1">
                     <Clock className="w-3 h-3" />
                     {s.timeSchedule ? new Date(s.timeSchedule).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'TBD'}
                   </div>

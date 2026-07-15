@@ -89,7 +89,7 @@ export default function ParentDashboard() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50">
+    <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors">
       <Navbar />
 
       <main className="flex-1 max-w-7xl mx-auto px-6 py-12 w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -98,13 +98,13 @@ export default function ParentDashboard() {
         <div className="space-y-6">
           
           {/* Link student Form */}
-          <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800 dark:text-white flex items-center gap-1.5">
               <Link2 className="w-4 h-4 text-indigo-600" /> Link Child Account
             </h3>
             <form onSubmit={handleLinkStudent} className="space-y-3">
               <div>
-                <label className="block text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1">
+                <label className="block text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider mb-1">
                   Student Email Address
                 </label>
                 <input
@@ -113,7 +113,7 @@ export default function ParentDashboard() {
                   value={studentEmail}
                   onChange={(e) => setStudentEmail(e.target.value)}
                   placeholder="jane@student.com"
-                  className="w-full bg-white border border-slate-200 rounded px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-indigo-600"
+                  className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-3 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-600"
                 />
               </div>
               <button
@@ -127,8 +127,8 @@ export default function ParentDashboard() {
           </div>
 
           {/* Child Profiles list */}
-          <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800 dark:text-white flex items-center gap-1.5">
               <Users className="w-4 h-4 text-indigo-600" /> Connected Children
             </h3>
             
@@ -144,8 +144,8 @@ export default function ParentDashboard() {
                     onClick={() => setSelectedStudent(child)}
                     className={`w-full text-left p-3 rounded-lg flex items-center gap-3 border transition-all cursor-pointer ${
                       selectedStudent?._id === child._id
-                        ? 'bg-indigo-50 border-indigo-500 text-indigo-700'
-                        : 'bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-700'
+                        ? 'bg-indigo-50 dark:bg-indigo-950/30 border-indigo-500 text-indigo-700 dark:text-indigo-400'
+                        : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-slate-700 dark:text-slate-300'
                     }`}
                   >
                     <img
@@ -170,14 +170,14 @@ export default function ParentDashboard() {
             <div className="space-y-6">
               
               {/* Child Header Card */}
-              <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm flex items-center gap-4">
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-4">
                 <img
                   src={selectedStudent.imageUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${selectedStudent.name}`}
                   alt={selectedStudent.name}
                   className="w-16 h-16 rounded-full border border-slate-200"
                 />
                 <div>
-                  <h2 className="text-xl font-bold text-slate-900">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white">
                     {selectedStudent.name} Performance Log
                   </h2>
                   <p className="text-xs text-indigo-600 font-bold uppercase tracking-wider mt-0.5">
@@ -187,8 +187,8 @@ export default function ParentDashboard() {
               </div>
 
               {/* Progress Tracker list */}
-              <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5 border-b border-slate-100 pb-3">
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800 dark:text-white flex items-center gap-1.5 border-b border-slate-100 dark:border-slate-800 pb-3">
                   <Award className="w-4 h-4 text-indigo-600" /> Syllabus Progress
                 </h3>
                 
@@ -204,19 +204,19 @@ export default function ParentDashboard() {
                       const percent = totalLessons ? Math.round((completedCount / totalLessons) * 100) : 0;
                       
                       return (
-                        <div key={idx} className="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-2">
+                        <div key={idx} className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-lg border border-slate-200 dark:border-slate-700 space-y-2">
                           <div className="flex justify-between items-center text-xs">
-                            <span className="font-bold text-slate-800 uppercase truncate max-w-md">
+                            <span className="font-bold text-slate-800 dark:text-white uppercase truncate max-w-md">
                               {item.course.courseTitle}
                             </span>
                             <span className="font-bold text-indigo-600">{percent}% Complete</span>
                           </div>
 
-                          <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                          <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
                             <div className="h-full bg-indigo-600" style={{ width: `${percent}%` }} />
                           </div>
 
-                          <div className="flex justify-between text-[9px] text-slate-500">
+                          <div className="flex justify-between text-[9px] text-slate-500 dark:text-slate-400">
                             <span>Completed {completedCount} of {totalLessons} modules</span>
                             {item.progress?.completed && (
                               <span className="text-emerald-700 font-bold uppercase flex items-center gap-0.5">
@@ -243,12 +243,12 @@ export default function ParentDashboard() {
                 ) : (
                   <div className="space-y-2.5">
                     {studentPurchases.map((purchase) => (
-                      <div key={purchase._id} className="flex justify-between items-center text-xs bg-slate-50 p-3 rounded-lg border border-slate-200">
+                      <div key={purchase._id} className="flex justify-between items-center text-xs bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
                         <div>
-                          <span className="font-bold text-slate-800 uppercase block font-sans">
+                          <span className="font-bold text-slate-800 dark:text-white uppercase block font-sans">
                             {purchase.courseId?.courseTitle || 'Syllabus Course'}
                           </span>
-                          <span className="text-[10px] text-slate-500">
+                          <span className="text-[10px] text-slate-500 dark:text-slate-400">
                             Date: {new Date(purchase.createdAt).toLocaleDateString()}
                           </span>
                         </div>
@@ -266,8 +266,8 @@ export default function ParentDashboard() {
 
             </div>
           ) : (
-            <div className="bg-white p-12 text-center rounded-lg border border-slate-200 shadow-sm">
-              <p className="text-xs text-slate-400 font-bold uppercase">
+            <div className="bg-white dark:bg-slate-900 p-12 text-center rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm">
+              <p className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase">
                 Select a child profile from the left list to begin tracking progress.
               </p>
             </div>

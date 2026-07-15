@@ -89,7 +89,7 @@ export default function Navbar() {
             <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
               <BookOpen className="w-4 h-4 text-white" />
             </div>
-            <span className={`font-extrabold text-xl ${scrolled || !isHeroPage ? 'text-slate-900' : 'text-white'}`}>
+            <span className={`font-extrabold text-xl ${scrolled || !isHeroPage ? 'text-slate-900 dark:text-white' : 'text-white'}`}>
               Edemy
             </span>
           </Link>
@@ -139,7 +139,7 @@ export default function Navbar() {
               <>
                 <Link
                   href="/courses"
-                  className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+                  className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                 >
                   <Search className="w-4 h-4" /> Search
                 </Link>
@@ -147,7 +147,7 @@ export default function Navbar() {
                 <div className="relative" ref={profileRef}>
                   <button
                     onClick={() => setProfileOpen(!profileOpen)}
-                    className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full border border-slate-200 bg-white hover:border-indigo-200 hover:shadow-sm transition-all"
+                    className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-indigo-200 dark:hover:border-indigo-700 hover:shadow-sm transition-all cursor-pointer"
                   >
                     {user.imageUrl ? (
                       <img src={user.imageUrl} alt={user.name}
@@ -157,7 +157,7 @@ export default function Navbar() {
                         <User className="w-3.5 h-3.5 text-indigo-600" />
                       </div>
                     )}
-                    <span className="hidden sm:block text-sm font-medium text-slate-700 max-w-[100px] truncate">
+                    <span className="hidden sm:block text-sm font-medium text-slate-700 dark:text-slate-200 max-w-[100px] truncate">
                       {user.name.split(' ')[0]}
                     </span>
                     <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
@@ -209,7 +209,7 @@ export default function Navbar() {
                   href="/auth/login"
                   className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors ${
                     scrolled || !isHeroPage
-                      ? 'text-slate-700 hover:bg-slate-100'
+                      ? 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
                       : 'text-white hover:bg-white/10'
                   }`}
                 >
@@ -227,7 +227,7 @@ export default function Navbar() {
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className={`md:hidden p-2 rounded-lg ${textClass} hover:bg-slate-100 transition-colors`}
+              className={`md:hidden p-2 rounded-lg ${textClass} hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer`}
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
