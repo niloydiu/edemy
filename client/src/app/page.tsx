@@ -8,18 +8,18 @@ import { motion } from 'framer-motion';
 import {
   ArrowRight, Star, Users, BookOpen, Award, TrendingUp, CheckCircle,
   Monitor, MapPin, FileText, Globe, Play, ChevronRight, Zap,
-  BarChart2, MessageSquare, Shield, Clock, Search
+  BarChart2, MessageSquare, Shield, Clock, Search, Cpu, Smartphone, Cloud, Palette, Megaphone
 } from 'lucide-react';
 
 const CATEGORIES = [
-  { name: 'Web Development', icon: '🌐', count: '48 courses' },
-  { name: 'Data Science', icon: '📊', count: '36 courses' },
-  { name: 'Artificial Intelligence', icon: '🤖', count: '28 courses' },
-  { name: 'Mobile Development', icon: '📱', count: '22 courses' },
-  { name: 'Cloud & DevOps', icon: '☁️', count: '30 courses' },
-  { name: 'Cybersecurity', icon: '🔐', count: '18 courses' },
-  { name: 'UI/UX Design', icon: '🎨', count: '24 courses' },
-  { name: 'Digital Marketing', icon: '📢', count: '20 courses' },
+  { name: 'Web Development', icon: Globe, count: '48 courses' },
+  { name: 'Data Science', icon: BarChart2, count: '36 courses' },
+  { name: 'Artificial Intelligence', icon: Cpu, count: '28 courses' },
+  { name: 'Mobile Development', icon: Smartphone, count: '22 courses' },
+  { name: 'Cloud & DevOps', icon: Cloud, count: '30 courses' },
+  { name: 'Cybersecurity', icon: Shield, count: '18 courses' },
+  { name: 'UI/UX Design', icon: Palette, count: '24 courses' },
+  { name: 'Digital Marketing', icon: Megaphone, count: '20 courses' },
 ];
 
 const TESTIMONIALS = [
@@ -253,7 +253,7 @@ export default function Home() {
               >
                 <Link href={`/courses?category=${encodeURIComponent(cat.name)}`}
                   className="group flex flex-col items-center p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-indigo-200 dark:hover:border-indigo-700 hover:shadow-md hover:shadow-indigo-50/20 transition-all duration-200 text-center cursor-pointer">
-                  <span className="text-3xl mb-3">{cat.icon}</span>
+                  <cat.icon className="w-8 h-8 text-indigo-600 dark:text-indigo-400 mb-3" />
                   <span className="font-semibold text-slate-800 dark:text-slate-200 text-sm group-hover:text-indigo-700 dark:group-hover:text-indigo-400 transition-colors">{cat.name}</span>
                   <span className="text-xs text-slate-500 dark:text-slate-400 mt-1">{cat.count}</span>
                 </Link>

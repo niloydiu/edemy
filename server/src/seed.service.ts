@@ -825,7 +825,27 @@ export class SeedService implements OnApplicationBootstrap {
     console.log('🌱 Checking database seed data...');
     const courseCount = await this.courseRepo.count();
     if (courseCount >= 10) {
-      console.log(`✅ Database already seeded with ${courseCount} courses.`);
+      console.log(`✅ Database already seeded with ${courseCount} courses. Enforcing related thumbnails...`);
+      const CATEGORY_IMAGES: Record<string, string> = {
+        'Web Development': 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=450&fit=crop&auto=format',
+        'Data Science': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=450&fit=crop&auto=format',
+        'Artificial Intelligence': 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=800&h=450&fit=crop&auto=format',
+        'Mobile Development': 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&h=450&fit=crop&auto=format',
+        'Cloud & DevOps': 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800&h=450&fit=crop&auto=format',
+        'Cybersecurity': 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&h=450&fit=crop&auto=format',
+        'UI/UX Design': 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&h=450&fit=crop&auto=format',
+        'Digital Marketing': 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=450&fit=crop&auto=format',
+        'Finance': 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=800&h=450&fit=crop&auto=format',
+        'Business': 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=450&fit=crop&auto=format',
+      };
+      const courses = await this.courseRepo.find();
+      for (const c of courses) {
+        const relatedImage = CATEGORY_IMAGES[c.category] || CATEGORY_IMAGES['Web Development'];
+        if (c.courseThumbnail !== relatedImage) {
+          c.courseThumbnail = relatedImage;
+          await this.courseRepo.save(c);
+        }
+      }
       return;
     }
     console.log('🚀 No courses found. Seeding 100+ courses and demo users...');
