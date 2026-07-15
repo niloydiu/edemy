@@ -422,7 +422,7 @@ export default function Home() {
               >
                 <div className="text-4xl lg:text-5xl font-black text-white">{s.value}</div>
                 <div className="text-indigo-100 font-semibold mt-1">{s.label}</div>
-                <div className="text-indigo-305 text-indigo-200 text-sm mt-0.5">{s.sub}</div>
+                <div className="text-indigo-200 text-sm mt-0.5">{s.sub}</div>
               </motion.div>
             ))}
           </div>
