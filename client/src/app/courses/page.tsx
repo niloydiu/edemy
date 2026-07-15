@@ -4,7 +4,7 @@ import CoursesPageClient from './CoursesPageClient';
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'Courses — Edemy hybrid learning platform',
+  title: 'Courses — Ndemy hybrid learning platform',
   description: 'Browse our extensive library of live classes, offline workshops, and recorded video bootcamps. Filter by price, subject, level, duration, and ratings.',
 };
 

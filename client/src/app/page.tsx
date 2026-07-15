@@ -368,7 +368,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14 space-y-4">
             <p className="section-eyebrow justify-center">
-              <CheckCircle className="w-4 h-4" /> Why Choose Edemy
+              <CheckCircle className="w-4 h-4" /> Why Choose Ndemy
             </p>
             <h2 className="section-title">Everything you need to succeed</h2>
             <p className="section-subtitle mx-auto text-center">
@@ -497,10 +497,10 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-12">
             <div className="col-span-2">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
-                  <BookOpen className="w-4 h-4 text-white" />
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center shadow-md shadow-indigo-500/20">
+                  <span className="text-white font-black text-lg select-none leading-none">N</span>
                 </div>
-                <span className="text-white font-bold text-xl">Edemy</span>
+                <span className="text-white font-bold text-xl">Ndemy</span>
               </div>
               <p className="text-sm text-slate-400 leading-relaxed max-w-xs">
                 A hybrid learning platform offering live classes, in-person workshops, and expert-curated courses.
@@ -529,7 +529,7 @@ export default function Home() {
             ))}
           </div>
           <div className="border-t border-slate-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-slate-500">© {new Date().getFullYear()} Edemy Platforms Inc. All rights reserved.</p>
+            <p className="text-xs text-slate-500">© {new Date().getFullYear()} Ndemy Platforms Inc. All rights reserved.</p>
             <div className="flex items-center gap-2">
               <Shield className="w-4 h-4 text-slate-500" />
               <span className="text-xs text-slate-500">Demo Platform • Secure SSL Connection</span>

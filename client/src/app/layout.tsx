@@ -2,7 +2,7 @@ import './globals.css';
 import { AuthProvider } from '@/context/AuthContext';
 
 export const metadata = {
-  title: 'Edemy — Learn Skills That Matter',
+  title: 'Ndemy — Learn Skills That Matter',
   description: 'Access 100+ expert-led courses in Web Development, Data Science, AI, Design, and more. Learn online, offline, or hybrid.',
 };
 

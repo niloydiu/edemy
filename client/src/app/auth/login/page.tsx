@@ -126,7 +126,7 @@ export default function LoginPage() {
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
               {activeTab === 'signin'
                 ? 'Sign in to access your customized learning dashboards'
-                : 'Join Edemy hybrid learning platform today'}
+                : 'Join Ndemy hybrid learning platform today'}
             </p>
           </div>
 
@@ -310,7 +310,7 @@ export default function LoginPage() {
                   <Chrome className="w-6 h-6 text-red-500" />
                 </div>
                 <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">Sign in with Google</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Choose an account to continue to Edemy</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Choose an account to continue to Ndemy</p>
               </div>
 
               <div className="space-y-3">
