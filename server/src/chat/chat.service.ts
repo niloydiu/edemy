@@ -1,48 +1,39 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Message } from '../schemas/message.schema';
-import { User } from '../schemas/user.schema';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, Or, Equal } from 'typeorm';
+import { Message } from '../entities/message.entity';
+import { User } from '../entities/user.entity';
 
 @Injectable()
 export class ChatService {
   constructor(
-    @InjectModel(Message.name) private messageModel: Model<Message>,
-    @InjectModel(User.name) private userModel: Model<User>,
+    @InjectRepository(Message) private messageRepo: Repository<Message>,
+    @InjectRepository(User) private userRepo: Repository<User>,
   ) {}
 
-  async sendMessage(senderId: string, receiverId: string, messageText: string, courseId?: string) {
-    const msg = new this.messageModel({
-      senderId,
-      receiverId,
-      message: messageText,
-      courseId,
-    });
-    return msg.save();
+  async sendMessage(senderId: string, receiverId: string, messageText: string, courseId?: number) {
+    const msg = this.messageRepo.create({ senderId, receiverId, message: messageText, courseId });
+    return this.messageRepo.save(msg);
   }
 
   async getChatHistory(userId1: string, userId2: string) {
-    return this.messageModel.find({
-      $or: [
-        { senderId: userId1, receiverId: userId2 },
-        { senderId: userId2, receiverId: userId1 },
-      ],
-    }).sort({ createdAt: 1 }).exec();
+    const messages = await this.messageRepo.find({ order: { createdAt: 'ASC' } });
+    return messages.filter(m =>
+      (m.senderId === userId1 && m.receiverId === userId2) ||
+      (m.senderId === userId2 && m.receiverId === userId1)
+    );
   }
 
-  // Get active contacts for a user
   async getContacts(userId: string) {
-    // Find all messages involving this user
-    const messages = await this.messageModel.find({
-      $or: [{ senderId: userId }, { receiverId: userId }],
-    }).exec();
-
+    const messages = await this.messageRepo.find();
     const contactIds = new Set<string>();
-    messages.forEach((m) => {
-      if (m.senderId !== userId) contactIds.add(m.senderId);
-      if (m.receiverId !== userId) contactIds.add(m.receiverId);
+    messages.forEach(m => {
+      if (m.senderId === userId) contactIds.add(m.receiverId);
+      if (m.receiverId === userId) contactIds.add(m.senderId);
     });
-
-    return this.userModel.find({ _id: { $in: Array.from(contactIds) } }).exec();
+    const contacts = await Promise.all(
+      Array.from(contactIds).map(id => this.userRepo.findOne({ where: { id } }))
+    );
+    return contacts.filter(Boolean);
   }
 }

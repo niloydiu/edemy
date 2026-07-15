@@ -12,7 +12,12 @@ export class ChatController {
     @Req() req: any,
     @Body() body: { receiverId: string; message: string; courseId?: string },
   ) {
-    return this.chatService.sendMessage(req.user.sub, body.receiverId, body.message, body.courseId);
+    return this.chatService.sendMessage(
+      req.user.sub,
+      body.receiverId,
+      body.message,
+      body.courseId ? parseInt(body.courseId) : undefined,
+    );
   }
 
   @Get('history')

@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ShieldAlert, Compass, User, KeyRound, Globe, GraduationCap } from 'lucide-react';
+import { GraduationCap, User, Users, Shield, ArrowRight, Chrome } from 'lucide-react';
 
 export default function LoginPage() {
   const { loginCustom, loginDemo } = useAuth();
@@ -44,108 +44,109 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-slate-50">
       <Navbar />
 
-      <main className="flex-1 flex flex-col items-center justify-center px-6 py-12">
+      <main className="flex-1 flex flex-col items-center justify-center px-4 py-24">
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="w-full max-w-xl glassmorphic p-8 md:p-12 rounded-lg border border-white/10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="w-full max-w-lg bg-white rounded-2xl border border-slate-200 shadow-xl shadow-slate-100 p-8 md:p-10"
         >
+          {/* Header */}
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-black uppercase tracking-wider bg-gradient-to-r from-neonCyan via-neonPurple to-neonMagenta bg-clip-text text-transparent">
-              Access Interface
+            <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">
+              Welcome to Edemy
             </h2>
-            <p className="text-xs text-gray-500 uppercase tracking-widest mt-2">
-              Sync your neural credentials with edemy.os
+            <p className="text-sm text-slate-500 mt-2">
+              Sign in with a pre-seeded developer profile or custom credentials
             </p>
           </div>
 
-          {/* Demo Login Grid */}
-          <div className="mb-8">
-            <label className="block text-[10px] text-gray-500 font-extrabold uppercase tracking-widest mb-3 text-center">
-              Acknowledge & Connect with seeded profiles
+          {/* Quick Demo Switcher Panel */}
+          <div className="mb-6">
+            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 text-center">
+              Quick Connect Demo Accounts
             </label>
             <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
                 disabled={isSubmitting}
                 onClick={() => handleDemoLogin('student')}
-                className="p-3 bg-cyan-950/20 hover:bg-cyan-900/40 text-cyan-400 border border-cyan-500/20 rounded-md text-xs font-bold transition-all text-center flex flex-col items-center gap-1 cursor-pointer"
+                className="flex items-center gap-2 p-3 border border-slate-200 rounded-xl hover:border-indigo-300 hover:bg-indigo-50/30 transition-all font-semibold text-slate-700 text-sm justify-center cursor-pointer disabled:opacity-50"
               >
-                <GraduationCap className="w-5 h-5" />
-                <span>STUDENT DEV</span>
+                <GraduationCap className="w-5 h-5 text-indigo-600" />
+                Student
               </button>
               <button
                 type="button"
                 disabled={isSubmitting}
                 onClick={() => handleDemoLogin('teacher')}
-                className="p-3 bg-purple-950/20 hover:bg-purple-900/40 text-purple-400 border border-purple-500/20 rounded-md text-xs font-bold transition-all text-center flex flex-col items-center gap-1 cursor-pointer"
+                className="flex items-center gap-2 p-3 border border-slate-200 rounded-xl hover:border-violet-300 hover:bg-violet-50/30 transition-all font-semibold text-slate-700 text-sm justify-center cursor-pointer disabled:opacity-50"
               >
-                <User className="w-5 h-5" />
-                <span>TUTOR DEV</span>
+                <User className="w-5 h-5 text-violet-600" />
+                Tutor
               </button>
               <button
                 type="button"
                 disabled={isSubmitting}
                 onClick={() => handleDemoLogin('parent')}
-                className="p-3 bg-pink-950/20 hover:bg-pink-900/40 text-pink-400 border border-pink-500/20 rounded-md text-xs font-bold transition-all text-center flex flex-col items-center gap-1 cursor-pointer"
+                className="flex items-center gap-2 p-3 border border-slate-200 rounded-xl hover:border-emerald-300 hover:bg-emerald-50/30 transition-all font-semibold text-slate-700 text-sm justify-center cursor-pointer disabled:opacity-50"
               >
-                <Globe className="w-5 h-5" />
-                <span>PARENT DEV</span>
+                <Users className="w-5 h-5 text-emerald-600" />
+                Parent
               </button>
               <button
                 type="button"
                 disabled={isSubmitting}
                 onClick={() => handleDemoLogin('admin')}
-                className="p-3 bg-amber-950/20 hover:bg-amber-900/40 text-amber-400 border border-amber-500/20 rounded-md text-xs font-bold transition-all text-center flex flex-col items-center gap-1 cursor-pointer"
+                className="flex items-center gap-2 p-3 border border-slate-200 rounded-xl hover:border-amber-300 hover:bg-amber-50/30 transition-all font-semibold text-slate-700 text-sm justify-center cursor-pointer disabled:opacity-50"
               >
-                <KeyRound className="w-5 h-5" />
-                <span>ADMIN DEV</span>
+                <Shield className="w-5 h-5 text-amber-600" />
+                Admin
               </button>
             </div>
           </div>
 
-          <div className="relative flex py-5 items-center">
-            <div className="flex-grow border-t border-white/5"></div>
-            <span className="flex-shrink mx-4 text-gray-600 text-[10px] font-bold uppercase tracking-widest">Or Custom google sign up</span>
-            <div className="flex-grow border-t border-white/5"></div>
+          <div className="relative flex py-4 items-center">
+            <div className="flex-grow border-t border-slate-200"></div>
+            <span className="flex-shrink mx-4 text-slate-400 text-xs font-medium uppercase">Or sign up manually</span>
+            <div className="flex-grow border-t border-slate-200"></div>
           </div>
 
           {/* Custom Google/Manual Login Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-[10px] text-gray-400 font-extrabold uppercase tracking-widest mb-1.5">
-                Google ID / Auth Token
+              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">
+                Google ID / Identity Token
               </label>
               <input
                 type="text"
                 required
                 value={googleId}
                 onChange={(e) => setGoogleId(e.target.value)}
-                placeholder="google_oauth_12345"
-                className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-neonCyan"
+                placeholder="google_1092834012"
+                className="input"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-[10px] text-gray-400 font-extrabold uppercase tracking-widest mb-1.5">
-                  Email Address
+                <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">
+                  Email
                 </label>
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@gmail.com"
-                  className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-neonCyan"
+                  placeholder="alex@gmail.com"
+                  className="input"
                 />
               </div>
               <div>
-                <label className="block text-[10px] text-gray-400 font-extrabold uppercase tracking-widest mb-1.5">
+                <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">
                   Full Name
                 </label>
                 <input
@@ -153,34 +154,40 @@ export default function LoginPage() {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="John Doe"
-                  className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-neonCyan"
+                  placeholder="Alex Thompson"
+                  className="input"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-[10px] text-gray-400 font-extrabold uppercase tracking-widest mb-1.5">
-                Access Tier Role
+              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">
+                Role Select
               </label>
-              <select
-                value={role}
-                onChange={(e) => setRole(e.target.value as any)}
-                className="w-full bg-background border border-white/10 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-neonCyan"
-              >
-                <option value="student">Student</option>
-                <option value="teacher">Tutor / Teacher</option>
-                <option value="parent">Parent</option>
-                <option value="admin">Administrator</option>
-              </select>
+              <div className="relative">
+                <select
+                  value={role}
+                  onChange={(e) => setRole(e.target.value as any)}
+                  className="input pr-10 appearance-none cursor-pointer"
+                >
+                  <option value="student">Student</option>
+                  <option value="teacher">Tutor / Instructor</option>
+                  <option value="parent">Parent</option>
+                  <option value="admin">Administrator</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                  <ArrowRight className="w-4 h-4 rotate-90" />
+                </div>
+              </div>
             </div>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full mt-4 py-3 bg-gradient-to-r from-neonCyan via-neonPurple to-neonMagenta text-black font-extrabold uppercase tracking-wider text-xs rounded hover:scale-[1.02] transition-all duration-200 cursor-pointer"
+              className="btn-primary w-full mt-4 flex items-center justify-center gap-2"
             >
-              {isSubmitting ? 'Verifying Neural Pattern...' : 'Sync Oauth Google Identity'}
+              <Chrome className="w-4 h-4" />
+              {isSubmitting ? 'Authenticating...' : 'Sign In / Sign Up with Google'}
             </button>
           </form>
         </motion.div>

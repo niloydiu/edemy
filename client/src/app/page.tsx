@@ -1,160 +1,531 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
+import { useAuth } from '@/context/AuthContext';
 import { motion } from 'framer-motion';
-import { ArrowRight, Cpu, Compass, BookOpen, MessageSquare, Zap, ShieldCheck } from 'lucide-react';
+import {
+  ArrowRight, Star, Users, BookOpen, Award, TrendingUp, CheckCircle,
+  Monitor, MapPin, FileText, Globe, Play, ChevronRight, Zap,
+  BarChart2, MessageSquare, Shield, Clock, Search
+} from 'lucide-react';
+
+const CATEGORIES = [
+  { name: 'Web Development', icon: '🌐', count: '48 courses' },
+  { name: 'Data Science', icon: '📊', count: '36 courses' },
+  { name: 'Artificial Intelligence', icon: '🤖', count: '28 courses' },
+  { name: 'Mobile Development', icon: '📱', count: '22 courses' },
+  { name: 'Cloud & DevOps', icon: '☁️', count: '30 courses' },
+  { name: 'Cybersecurity', icon: '🔐', count: '18 courses' },
+  { name: 'UI/UX Design', icon: '🎨', count: '24 courses' },
+  { name: 'Digital Marketing', icon: '📢', count: '20 courses' },
+];
+
+const TESTIMONIALS = [
+  {
+    name: 'Sarah Chen', role: 'Frontend Developer at Google', rating: 5,
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop',
+    text: 'Edemy completely transformed my career. I landed my dream job at Google 3 months after finishing the React Bootcamp. The offline lab sessions were incredibly effective.',
+  },
+  {
+    name: 'Marcus Johnson', role: 'Data Scientist at Netflix', rating: 5,
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop',
+    text: 'The Data Science track is world-class. Real projects, live online sessions with tutors, and offline workshops that helped me build an actual portfolio. Best investment ever.',
+  },
+  {
+    name: 'Priya Patel', role: 'UX Lead at Airbnb', rating: 5,
+    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop',
+    text: 'I\'ve tried Udemy, Coursera — Edemy\'s hybrid approach (online + offline + PDF resources) is simply unmatched. The parent monitoring feature let my family support my learning journey.',
+  },
+];
+
+const FEATURES = [
+  {
+    icon: Monitor, title: 'Live Online Classes', color: 'text-indigo-600', bg: 'bg-indigo-50',
+    desc: 'Join live video sessions with Google Meet integration. Interactive, recorded, and available on-demand.',
+  },
+  {
+    icon: MapPin, title: 'Physical Classrooms', color: 'text-emerald-600', bg: 'bg-emerald-50',
+    desc: 'Attend real in-person workshops at our learning centers with hands-on labs and group projects.',
+  },
+  {
+    icon: FileText, title: 'PDF & Study Materials', color: 'text-amber-600', bg: 'bg-amber-50',
+    desc: 'Download comprehensive PDF resources, reference guides, and cheat sheets for every lesson.',
+  },
+  {
+    icon: BarChart2, title: 'Progress Tracking', color: 'text-purple-600', bg: 'bg-purple-50',
+    desc: 'Track lesson completion, quiz scores, and certificates. Parents can monitor their child\'s learning.',
+  },
+  {
+    icon: MessageSquare, title: 'Tutor Direct Chat', color: 'text-rose-600', bg: 'bg-rose-50',
+    desc: 'Message instructors directly for personalized guidance, career advice, and code reviews.',
+  },
+  {
+    icon: Award, title: 'Verified Certificates', color: 'text-cyan-600', bg: 'bg-cyan-50',
+    desc: 'Earn shareable completion certificates recognized by top employers in 50+ countries.',
+  },
+];
+
+const STATS = [
+  { value: '100+', label: 'Expert Courses', icon: BookOpen },
+  { value: '12,000+', label: 'Active Students', icon: Users },
+  { value: '180+', label: 'Certified Tutors', icon: Award },
+  { value: '98%', label: 'Satisfaction Rate', icon: Star },
+];
+
+function StarRating({ rating }: { rating: number }) {
+  return (
+    <div className="flex gap-0.5">
+      {[1, 2, 3, 4, 5].map(i => (
+        <Star
+          key={i}
+          className={`w-4 h-4 ${i <= rating ? 'text-amber-400 fill-amber-400' : 'text-gray-200 fill-gray-200'}`}
+        />
+      ))}
+    </div>
+  );
+}
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i = 0) => ({ opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.5, ease: 'easeOut' } }),
+};
 
 export default function Home() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-      },
-    },
-  };
+  const { api } = useAuth();
+  const [featuredCourses, setFeaturedCourses] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const itemVariants = {
-    hidden: { y: 25, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { type: 'spring', stiffness: 80 },
-    },
+  useEffect(() => {
+    api.get('/courses').then(res => {
+      setFeaturedCourses(res.data.slice(0, 8));
+    }).catch(() => {});
+  }, []);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      window.location.href = `/courses?search=${encodeURIComponent(searchQuery)}`;
+    }
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50">
+    <div className="flex flex-col min-h-screen bg-white">
       <Navbar />
-      <main className="flex-1 bg-white">
-        {/* Hero Section */}
-        <section className="max-w-7xl mx-auto px-6 py-20 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <div className="lg:col-span-7 space-y-6">
-            <div className="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-100 text-indigo-700 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider">
-              <Zap className="w-4 h-4" /> Structured Hybrid Learning Platform
+
+      {/* ════════ HERO ════════ */}
+      <section className="hero-gradient text-white py-20 lg:py-28 relative overflow-hidden">
+        {/* Decorative blobs */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-400 rounded-full blur-3xl opacity-20 translate-y-1/2 -translate-x-1/2" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial="hidden" animate="visible"
+              className="space-y-8"
+            >
+              <motion.div variants={fadeUp} custom={0}>
+                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/20 bg-white/10 text-sm font-medium text-indigo-200 backdrop-blur-sm">
+                  <Zap className="w-4 h-4" /> New: 100+ Courses Just Added
+                </span>
+              </motion.div>
+
+              <motion.h1 variants={fadeUp} custom={1} className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight">
+                Learn skills that
+                <span className="block text-indigo-300"> move you forward.</span>
+              </motion.h1>
+
+              <motion.p variants={fadeUp} custom={2} className="text-lg text-indigo-100 max-w-xl leading-relaxed">
+                Join 12,000+ students in live online classes, in-person workshops, and structured courses taught by industry experts.
+              </motion.p>
+
+              {/* Search Bar */}
+              <motion.form variants={fadeUp} custom={3} onSubmit={handleSearch} className="flex gap-0 w-full max-w-xl">
+                <div className="relative flex-1">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search for courses, topics, or skills..."
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    className="w-full pl-12 pr-4 py-4 rounded-l-xl text-slate-900 bg-white text-sm font-medium focus:outline-none border-0"
+                  />
+                </div>
+                <button type="submit" className="px-6 py-4 bg-amber-500 hover:bg-amber-400 text-white font-bold rounded-r-xl transition-colors text-sm whitespace-nowrap">
+                  Search
+                </button>
+              </motion.form>
+
+              {/* Quick Links */}
+              <motion.div variants={fadeUp} custom={4} className="flex items-center gap-2 text-sm text-indigo-200">
+                <span className="font-medium">Popular:</span>
+                {['React', 'Python', 'Figma', 'AWS'].map(tag => (
+                  <Link key={tag} href={`/courses?search=${tag}`}
+                    className="px-3 py-1 rounded-full border border-white/20 bg-white/10 hover:bg-white/20 text-white text-xs font-medium transition-colors">
+                    {tag}
+                  </Link>
+                ))}
+              </motion.div>
+            </motion.div>
+
+            {/* Hero Right — Stats Card */}
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="hidden lg:block"
+            >
+              <div className="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-6 space-y-4">
+                <div className="flex items-center gap-3 p-4 bg-white/10 rounded-xl border border-white/10">
+                  <div className="w-12 h-12 rounded-lg bg-indigo-500/30 flex items-center justify-center text-2xl">🚀</div>
+                  <div>
+                    <p className="text-white font-semibold text-sm">Next Live Session</p>
+                    <p className="text-indigo-200 text-xs">React 18 Deep Dive — Today at 14:00</p>
+                  </div>
+                  <span className="ml-auto bg-emerald-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">LIVE</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  {STATS.map(s => (
+                    <div key={s.label} className="p-4 bg-white/10 rounded-xl border border-white/10 text-center">
+                      <div className="text-2xl font-extrabold text-white">{s.value}</div>
+                      <div className="text-xs text-indigo-200 mt-0.5">{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-2 p-3 bg-white/10 rounded-xl border border-white/10">
+                  <div className="flex -space-x-2">
+                    {['photo-1494790108377-be9c29b29330', 'photo-1507003211169-0a1dd7228f2d', 'photo-1438761681033-6461ffad8d80'].map((p, i) => (
+                      <img key={i} src={`https://images.unsplash.com/${p}?w=40&h=40&fit=crop`}
+                        className="w-8 h-8 rounded-full border-2 border-indigo-800 object-cover" alt="" />
+                    ))}
+                  </div>
+                  <p className="text-xs text-indigo-100 font-medium">
+                    <span className="text-white font-bold">2,340 students</span> enrolled this week
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════ TRUSTED BY ════════ */}
+      <section className="border-b border-slate-100 bg-slate-50 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-xs font-semibold text-slate-400 uppercase tracking-widest mb-6">
+            Trusted by professionals at leading companies
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-8 opacity-40 grayscale">
+            {['Google', 'Microsoft', 'Amazon', 'Meta', 'Apple', 'Netflix', 'Stripe', 'Airbnb'].map(c => (
+              <span key={c} className="text-lg font-black text-slate-700 tracking-tight">{c}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════ CATEGORIES ════════ */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-10">
+            <div>
+              <p className="section-eyebrow mb-2">
+                <TrendingUp className="w-4 h-4" /> Top Categories
+              </p>
+              <h2 className="section-title">Explore by subject</h2>
             </div>
-            
-            <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 leading-tight tracking-tight">
-              Learn without limits. Start your <span className="text-indigo-600">Edemy Journey</span>
-            </h1>
-            
-            <p className="text-slate-600 md:text-lg max-w-xl leading-relaxed">
-              Unlock a world of possibilities with PDF resources, live online streaming meetups, physical classroom sessions, and direct mentor guidance.
+            <Link href="/courses" className="hidden sm:flex items-center gap-1 text-indigo-600 font-semibold text-sm hover:underline">
+              View all <ChevronRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {CATEGORIES.map((cat, i) => (
+              <motion.div
+                key={cat.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.07 }}
+              >
+                <Link href={`/courses?category=${encodeURIComponent(cat.name)}`}
+                  className="group flex flex-col items-center p-5 rounded-xl border border-slate-200 bg-white hover:border-indigo-200 hover:shadow-md hover:shadow-indigo-50 transition-all duration-200 text-center cursor-pointer">
+                  <span className="text-3xl mb-3">{cat.icon}</span>
+                  <span className="font-semibold text-slate-800 text-sm group-hover:text-indigo-700 transition-colors">{cat.name}</span>
+                  <span className="text-xs text-slate-500 mt-1">{cat.count}</span>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════ FEATURED COURSES ════════ */}
+      <section className="py-16 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-10">
+            <div>
+              <p className="section-eyebrow mb-2">
+                <Star className="w-4 h-4" /> Most Popular
+              </p>
+              <h2 className="section-title">Featured Courses</h2>
+            </div>
+            <Link href="/courses" className="btn-secondary text-sm">
+              All Courses <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          {featuredCourses.length === 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[...Array(8)].map((_, i) => (
+                <div key={i} className="course-card animate-pulse">
+                  <div className="bg-slate-200 aspect-video w-full" />
+                  <div className="course-card-body">
+                    <div className="h-3 bg-slate-200 rounded w-1/3" />
+                    <div className="h-4 bg-slate-200 rounded w-full" />
+                    <div className="h-4 bg-slate-200 rounded w-3/4" />
+                    <div className="h-3 bg-slate-200 rounded w-1/2" />
+                    <div className="h-8 bg-slate-200 rounded mt-2" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {featuredCourses.map((course, i) => {
+                const avgRating = course.ratings?.length
+                  ? (course.ratings.reduce((a: number, r: any) => a + (Number(r.rating) || 0), 0) / course.ratings.length)
+                  : 4.8;
+                const finalPrice = (Number(course.coursePrice) || 0) * (1 - (Number(course.discount) || 0) / 100);
+                const lessonCount = course.lessons?.length || 0;
+
+                return (
+                  <motion.div
+                    key={course._id || course.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.08 }}
+                  >
+                    <Link href={`/courses/${course._id || course.id}`} className="course-card group block bg-white border border-slate-200 rounded-lg overflow-hidden">
+                      <div className="relative overflow-hidden aspect-video bg-slate-100">
+                        <img
+                          src={course.courseThumbnail || `https://images.unsplash.com/photo-1587620962725-abab19836100?w=400&h=225&fit=crop`}
+                          alt={course.courseTitle}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          onError={(e) => {
+                            e.currentTarget.src = 'https://images.unsplash.com/photo-1587620962725-abab19836100?w=400&h=225&fit=crop';
+                          }}
+                        />
+                        {course.discount > 0 && (
+                          <div className="absolute top-2 left-2 bg-red-500 text-white font-bold text-[10px] px-2 py-0.5 rounded">
+                            -{course.discount}% OFF
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-4 space-y-2 flex flex-col h-full">
+                        {course.category && (
+                          <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wide">{course.category}</span>
+                        )}
+                        <h3 className="font-bold text-slate-900 text-sm leading-snug line-clamp-2 group-hover:text-indigo-700 transition-colors">
+                          {course.courseTitle}
+                        </h3>
+                        <div className="flex items-center gap-2 text-xs text-slate-500">
+                          <Clock className="w-3.5 h-3.5" />
+                          <span>{lessonCount} lessons</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-amber-600 font-bold text-xs">{Number(avgRating).toFixed(1)}</span>
+                          <StarRating rating={avgRating} />
+                          <span className="text-xs text-slate-400">({course.ratings?.length || 0})</span>
+                        </div>
+                        <div className="flex items-center justify-between mt-auto pt-2 border-t border-slate-100">
+                          <div className="flex items-baseline gap-1.5">
+                            <span className="font-bold text-slate-900 text-base">${Number(finalPrice).toFixed(2)}</span>
+                            {course.discount > 0 && (
+                              <span className="text-xs text-slate-400 line-through">${Number(course.coursePrice).toFixed(2)}</span>
+                            )}
+                          </div>
+                          <span className="text-xs font-semibold text-indigo-600 group-hover:underline flex items-center gap-0.5">
+                            Enroll <ArrowRight className="w-3 h-3" />
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ════════ WHY EDEMY (Features Grid) ════════ */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14 space-y-4">
+            <p className="section-eyebrow justify-center">
+              <CheckCircle className="w-4 h-4" /> Why Choose Edemy
             </p>
+            <h2 className="section-title">Everything you need to succeed</h2>
+            <p className="section-subtitle mx-auto text-center">
+              We combine the flexibility of online learning with the depth of in-person instruction — creating a truly hybrid educational experience.
+            </p>
+          </div>
 
-            <div className="flex flex-wrap gap-4 pt-2">
-              <Link
-                href="/courses"
-                className="px-8 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-md shadow transition-all flex items-center gap-2"
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {FEATURES.map((f, i) => (
+              <motion.div
+                key={f.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08 }}
+                className="card p-6 group"
               >
-                Explore Courses <ArrowRight className="w-5 h-5" />
-              </Link>
-              <Link
-                href="/auth/login"
-                className="px-8 py-3.5 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold rounded-md transition-all"
+                <div className={`w-12 h-12 ${f.bg} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                  <f.icon className={`w-6 h-6 ${f.color}`} />
+                </div>
+                <h3 className="font-bold text-slate-900 mb-2">{f.title}</h3>
+                <p className="text-slate-500 text-sm leading-relaxed">{f.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════ STATS BAND ════════ */}
+      <section className="py-16 bg-gradient-to-r from-indigo-600 to-violet-600">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              { value: '100+', label: 'Expert Courses', sub: 'Across 10+ subjects' },
+              { value: '12,000+', label: 'Active Students', sub: 'In 40+ countries' },
+              { value: '180+', label: 'Certified Tutors', sub: 'Industry professionals' },
+              { value: '98%', label: 'Satisfaction Rate', sub: 'Based on 5,000 reviews' },
+            ].map((s, i) => (
+              <motion.div
+                key={s.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="text-center"
               >
-                Join Student Portal
+                <div className="text-4xl lg:text-5xl font-black text-white">{s.value}</div>
+                <div className="text-indigo-100 font-semibold mt-1">{s.label}</div>
+                <div className="text-indigo-300 text-sm mt-0.5">{s.sub}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════ TESTIMONIALS ════════ */}
+      <section className="py-20 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14 space-y-4">
+            <p className="section-eyebrow justify-center">
+              <Star className="w-4 h-4" /> Student Reviews
+            </p>
+            <h2 className="section-title">Loved by learners worldwide</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {TESTIMONIALS.map((t, i) => (
+              <motion.div
+                key={t.name}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.12 }}
+                className="card p-6 space-y-4"
+              >
+                <StarRating rating={t.rating} />
+                <p className="text-slate-700 text-sm leading-relaxed italic">"{t.text}"</p>
+                <div className="flex items-center gap-3 pt-2 border-t border-slate-100">
+                  <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover border-2 border-indigo-100" />
+                  <div>
+                    <p className="font-semibold text-slate-900 text-sm">{t.name}</p>
+                    <p className="text-xs text-slate-500">{t.role}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════ CTA BANNER ════════ */}
+      <section className="py-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="p-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-700 text-white shadow-2xl shadow-indigo-500/30"
+          >
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-4 leading-tight">
+              Ready to start your learning journey?
+            </h2>
+            <p className="text-indigo-100 mb-8 text-lg max-w-xl mx-auto">
+              Join 12,000+ students already learning. Enroll in any course today and get lifetime access.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/courses" className="px-8 py-4 bg-white text-indigo-700 font-bold rounded-xl hover:bg-indigo-50 transition-colors text-base">
+                Browse Courses
+              </Link>
+              <Link href="/auth/login" className="px-8 py-4 bg-white/10 backdrop-blur text-white font-bold rounded-xl border border-white/30 hover:bg-white/20 transition-colors text-base">
+                Create Free Account
               </Link>
             </div>
-          </div>
+          </motion.div>
+        </div>
+      </section>
 
-          <div className="lg:col-span-5 relative hidden lg:block">
-            <div className="absolute -inset-1 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 opacity-20 blur-xl"></div>
-            <div className="relative bg-slate-50 border border-slate-200 p-8 rounded-2xl shadow-xl space-y-6">
-              <div className="flex items-center gap-4">
-                <img
-                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=150&auto=format&fit=crop&q=60"
-                  alt="Students learning"
-                  className="w-16 h-16 rounded-full border-2 border-indigo-500 object-cover"
-                />
-                <div>
-                  <h4 className="font-bold text-slate-900 text-sm">Interactive Syllabus</h4>
-                  <p className="text-xs text-slate-500">Live streams & physical classes</p>
+      {/* ════════ FOOTER ════════ */}
+      <footer className="bg-slate-900 text-slate-300 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-12">
+            <div className="col-span-2">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
+                  <BookOpen className="w-4 h-4 text-white" />
                 </div>
+                <span className="text-white font-bold text-xl">Edemy</span>
               </div>
-              
-              <div className="space-y-3">
-                <div className="bg-white p-3 rounded-lg border border-slate-100 flex items-center justify-between text-xs">
-                  <span className="font-semibold text-slate-700">Digital Classroom Meet</span>
-                  <span className="text-indigo-600 font-bold">14:00 Today</span>
-                </div>
-                <div className="bg-white p-3 rounded-lg border border-slate-100 flex items-center justify-between text-xs">
-                  <span className="font-semibold text-slate-700">Structured Lesson PDF</span>
-                  <span className="text-emerald-600 font-bold">Unlocked</span>
-                </div>
+              <p className="text-sm text-slate-400 leading-relaxed max-w-xs">
+                A hybrid learning platform offering live classes, in-person workshops, and expert-curated courses.
+              </p>
+            </div>
+            {[
+              { title: 'Platform', links: ['Browse Courses', 'Become a Tutor', 'For Parents', 'Certificates'] },
+              { title: 'Company', links: ['About Us', 'Blog', 'Careers', 'Press'] },
+              { title: 'Support', links: ['Help Center', 'Contact Us', 'Privacy Policy', 'Terms of Service'] },
+            ].map(col => (
+              <div key={col.title}>
+                <p className="text-white font-semibold text-sm mb-4">{col.title}</p>
+                <ul className="space-y-3">
+                  {col.links.map(l => (
+                    <li key={l}>
+                      <a href="#" className="text-sm text-slate-400 hover:text-white transition-colors">{l}</a>
+                    </li>
+                  ))}
+                </ul>
               </div>
+            ))}
+          </div>
+          <div className="border-t border-slate-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-slate-500">© {new Date().getFullYear()} Edemy Platforms Inc. All rights reserved.</p>
+            <div className="flex items-center gap-2">
+              <Shield className="w-4 h-4 text-slate-500" />
+              <span className="text-xs text-slate-500">SOC 2 Type II Certified • GDPR Compliant</span>
             </div>
           </div>
-        </section>
-
-        {/* Features Grid */}
-        <section className="bg-slate-50 border-y border-slate-200 py-20">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="text-center max-w-xl mx-auto mb-16 space-y-3">
-              <h2 className="text-3xl font-bold text-slate-900">Why choose Edemy?</h2>
-              <p className="text-slate-600 text-sm">Our platform combines the best features of Coursera and Udemy to make learning interactive and manageable.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="clean-card p-8 bg-white space-y-4">
-                <div className="w-12 h-12 rounded-lg bg-indigo-50 flex items-center justify-center">
-                  <Compass className="w-6 h-6 text-indigo-600" />
-                </div>
-                <h3 className="text-lg font-bold text-slate-900">Hybrid Classroom Formats</h3>
-                <p className="text-slate-600 text-sm leading-relaxed">
-                  Attend offline classes with physical location support, or online live streams using Google Meet, PDF materials, and direct links.
-                </p>
-              </div>
-
-              <div className="clean-card p-8 bg-white space-y-4">
-                <div className="w-12 h-12 rounded-lg bg-indigo-50 flex items-center justify-center">
-                  <MessageSquare className="w-6 h-6 text-indigo-600" />
-                </div>
-                <h3 className="text-lg font-bold text-slate-900">Direct Instructor Chat</h3>
-                <p className="text-slate-600 text-sm leading-relaxed">
-                  Chat directly with your course instructors in real-time. Discuss course materials, assignments, or ask general career questions.
-                </p>
-              </div>
-
-              <div className="clean-card p-8 bg-white space-y-4">
-                <div className="w-12 h-12 rounded-lg bg-indigo-50 flex items-center justify-center">
-                  <ShieldCheck className="w-6 h-6 text-indigo-600" />
-                </div>
-                <h3 className="text-lg font-bold text-slate-900">Parental Progress Feed</h3>
-                <p className="text-slate-600 text-sm leading-relaxed">
-                  Parents can link accounts to inspect purchase history, check course completion ratios, and get audit updates.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Quick Stats */}
-        <section className="max-w-7xl mx-auto px-6 py-20 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          <div>
-            <div className="text-4xl font-extrabold text-indigo-600">12,000+</div>
-            <div className="text-xs text-slate-500 uppercase font-bold tracking-wider mt-2">Active Students</div>
-          </div>
-          <div>
-            <div className="text-4xl font-extrabold text-indigo-600">180+</div>
-            <div className="text-xs text-slate-500 uppercase font-bold tracking-wider mt-2">Certified Tutors</div>
-          </div>
-          <div>
-            <div className="text-4xl font-extrabold text-indigo-600">99.8%</div>
-            <div className="text-xs text-slate-500 uppercase font-bold tracking-wider mt-2">Completion Rate</div>
-          </div>
-          <div>
-            <div className="text-4xl font-extrabold text-indigo-600">4.9/5</div>
-            <div className="text-xs text-slate-500 uppercase font-bold tracking-wider mt-2">Average Rating</div>
-          </div>
-        </section>
-      </main>
-
-      <footer className="border-t border-slate-200 bg-white py-12 text-center text-xs text-slate-500 font-semibold uppercase tracking-wider">
-        &copy; {new Date().getFullYear()} EDEMY Platforms. All rights reserved.
+        </div>
       </footer>
     </div>
   );

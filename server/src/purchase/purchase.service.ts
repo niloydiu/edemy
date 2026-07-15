@@ -1,37 +1,34 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Purchase } from '../schemas/purchase.schema';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Purchase } from '../entities/purchase.entity';
 import { CourseService } from '../course/course.service';
 
 @Injectable()
 export class PurchaseService {
   constructor(
-    @InjectModel(Purchase.name) private purchaseModel: Model<Purchase>,
+    @InjectRepository(Purchase) private purchaseRepo: Repository<Purchase>,
     private courseService: CourseService,
   ) {}
 
   async createPurchase(userId: string, courseId: string, amount: number) {
-    const purchase = new this.purchaseModel({
+    const purchase = this.purchaseRepo.create({
       userId,
-      courseId,
+      courseId: parseInt(courseId),
       amount,
-      status: 'completed', // Immediately completed for our payment flow
+      status: 'completed',
       paymentIntentId: 'mock_pi_' + Math.random().toString(36).substring(7),
     });
-    await purchase.save();
-
-    // Auto-enroll the student in the course
+    await this.purchaseRepo.save(purchase);
     await this.courseService.enrollStudent(courseId, userId);
-
     return purchase;
   }
 
   async findAll() {
-    return this.purchaseModel.find().populate('courseId').populate('userId').exec();
+    return this.purchaseRepo.find({ order: { createdAt: 'DESC' } });
   }
 
   async findByUserId(userId: string) {
-    return this.purchaseModel.find({ userId }).populate('courseId').exec();
+    return this.purchaseRepo.find({ where: { userId }, order: { createdAt: 'DESC' } });
   }
 }

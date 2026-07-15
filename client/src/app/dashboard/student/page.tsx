@@ -1,538 +1,171 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import { useAuth } from '@/context/AuthContext';
-import { motion } from 'framer-motion';
-import { BookOpen, CheckCircle, Circle, Calendar, MapPin, Video, FileText, ArrowRight, ExternalLink, MessageCircle, Award } from 'lucide-react';
-import Link from 'next/link';
+import {
+  BookOpen, Clock, Award, TrendingUp, Play, CheckCircle,
+  BarChart2, ChevronRight, Star
+} from 'lucide-react';
 
 export default function StudentDashboard() {
-  const { api, user } = useAuth();
-  const [courses, setCourses] = useState<any[]>([]);
+  const { user, api } = useAuth();
+  const [enrolledCourses, setEnrolledCourses] = useState<any[]>([]);
+  const [progress, setProgress] = useState<Record<number, any>>({});
   const [loading, setLoading] = useState(true);
-  
-  const [selectedCourse, setSelectedCourse] = useState<any>(null);
-  const [progress, setProgress] = useState<any>(null);
-  const [selectedLesson, setSelectedLesson] = useState<any>(null);
 
   useEffect(() => {
-    async function loadEnrolledCourses() {
-      if (!user) return;
+    if (!user) return;
+    const fetchData = async () => {
       try {
         const res = await api.get('/courses');
-        // Filter courses where enrolledStudents contains user._id
-        const enrolled = res.data.filter((c: any) => c.enrolledStudents?.includes(user._id));
-        setCourses(enrolled);
-        if (enrolled.length > 0) {
-          setSelectedCourse(enrolled[0]);
+        const allCourses = res.data;
+        const enrolled = allCourses.filter((c: any) =>
+          (c.enrolledStudents || []).includes((user as any).id || (user as any).sub)
+        );
+        setEnrolledCourses(enrolled);
+
+        const progressData: Record<number, any> = {};
+        for (const c of enrolled) {
+          try {
+            const pRes = await api.get(`/courses/${c._id || c.id}/progress`);
+            progressData[c._id || c.id] = pRes.data;
+          } catch {}
         }
-      } catch (err) {
-        console.error('Failed to load student courses:', err);
-      } finally {
+        setProgress(progressData);
+      } catch {} finally {
         setLoading(false);
       }
-    }
-    loadEnrolledCourses();
+    };
+    fetchData();
   }, [user]);
 
-  useEffect(() => {
-    async function loadProgress() {
-      if (!selectedCourse || !user) return;
-      try {
-        const res = await api.get(`/courses/${selectedCourse._id}/progress`);
-        setProgress(res.data);
-        if (selectedCourse.lessons && selectedCourse.lessons.length > 0) {
-          setSelectedLesson(selectedCourse.lessons[0]);
-        } else {
-          setSelectedLesson(null);
-        }
-      } catch (err) {
-        console.error('Failed to load course progress:', err);
-      }
-    }
-    loadProgress();
-  }, [selectedCourse, user]);
-
-  const [quizSelectedOption, setQuizSelectedOption] = useState<number | null>(null);
-  const [quizChecked, setQuizChecked] = useState(false);
-  const [quizPassed, setQuizPassed] = useState(false);
-  const [showCertificate, setShowCertificate] = useState(false);
-
-  useEffect(() => {
-    setQuizSelectedOption(null);
-    setQuizChecked(false);
-    setQuizPassed(false);
-  }, [selectedLesson]);
-
-  const toggleLessonCompletion = async (lessonId: string, currentCompleted: boolean) => {
-    if (!selectedCourse) return;
-    try {
-      const res = await api.post(`/courses/${selectedCourse._id}/progress`, {
-        lessonId,
-        completed: !currentCompleted,
-      });
-      setProgress(res.data);
-    } catch (err) {
-      console.error('Failed to toggle lesson progress:', err);
-    }
-  };
+  const completedCount = Object.values(progress).filter((p: any) => p?.completed).length;
+  const totalLessonsCompleted = Object.values(progress).reduce((sum: number, p: any) => sum + (p?.completedLessons?.length || 0), 0);
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50">
       <Navbar />
+      <div className="pt-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-extrabold text-slate-900">
+            Welcome back, {user?.name?.split(' ')[0]} 👋
+          </h1>
+          <p className="text-slate-500 text-sm mt-1">Continue your learning journey</p>
+        </div>
 
-      <main className="flex-1 max-w-7xl mx-auto px-6 py-12 w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Left Column: Course List */}
-        <div className="space-y-6">
-          <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
-            <h3 className="text-lg font-bold tracking-tight text-slate-900 mb-4">
-              Enrolled Courses
-            </h3>
-            
-            {loading ? (
-              <div className="text-xs text-slate-500 animate-pulse uppercase font-bold tracking-wider">
-                Verifying enrollment list...
+        {/* Stats */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {[
+            { icon: BookOpen, label: 'Enrolled Courses', value: enrolledCourses.length, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+            { icon: CheckCircle, label: 'Completed', value: completedCount, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+            { icon: Play, label: 'Lessons Done', value: totalLessonsCompleted, color: 'text-amber-600', bg: 'bg-amber-50' },
+            { icon: Award, label: 'Certificates', value: completedCount, color: 'text-purple-600', bg: 'bg-purple-50' },
+          ].map(s => (
+            <div key={s.label} className="card p-5">
+              <div className={`w-10 h-10 ${s.bg} rounded-xl flex items-center justify-center mb-3`}>
+                <s.icon className={`w-5 h-5 ${s.color}`} />
               </div>
-            ) : courses.length === 0 ? (
-              <div className="space-y-4">
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">
-                  No courses purchased yet.
-                </p>
-                <Link
-                  href="/courses"
-                  className="inline-block px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded tracking-wider"
-                >
-                  Browse Catalog
-                </Link>
+              <div className="text-2xl font-extrabold text-slate-900">{s.value}</div>
+              <div className="text-xs font-medium text-slate-500 mt-0.5">{s.label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* My Courses */}
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="font-bold text-slate-900 text-lg">My Courses</h2>
+          <Link href="/courses" className="text-sm text-indigo-600 font-semibold hover:underline flex items-center gap-1">
+            Find more <ChevronRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="card p-4 animate-pulse">
+                <div className="bg-slate-200 aspect-video rounded-lg mb-3" />
+                <div className="h-4 bg-slate-200 rounded mb-2" />
+                <div className="h-3 bg-slate-200 rounded w-1/2" />
               </div>
-            ) : (
-              <div className="space-y-3">
-                {courses.map((course) => {
-                  const isActive = selectedCourse?._id === course._id;
-                  return (
-                    <button
-                      key={course._id}
-                      onClick={() => setSelectedCourse(course)}
-                      className={`w-full text-left p-4 rounded-lg border transition-all cursor-pointer ${
-                        isActive
-                          ? 'bg-indigo-50 border-indigo-500 text-indigo-700'
-                          : 'bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-700'
-                      }`}
-                    >
-                      <h4 className="text-sm font-bold truncate">
-                        {course.courseTitle}
-                      </h4>
-                      <p className="text-[10px] text-slate-400 font-semibold mt-1">
-                        Instructor: Professor Tech
-                      </p>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
+            ))}
           </div>
+        ) : enrolledCourses.length === 0 ? (
+          <div className="card p-12 text-center">
+            <BookOpen className="w-16 h-16 text-slate-200 mx-auto mb-4" />
+            <h3 className="font-bold text-slate-900 mb-2">No courses yet</h3>
+            <p className="text-slate-500 text-sm mb-6">Enroll in a course to start learning</p>
+            <Link href="/courses" className="btn-primary">Browse Courses</Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {enrolledCourses.map(course => {
+              const courseId = course._id || course.id;
+              const prog = progress[courseId];
+              const totalLessons = course.lessons?.length || 0;
+              const completedLessons = prog?.completedLessons?.length || 0;
+              const pct = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
 
-          {/* Parental Status Details */}
-          {user && user.parentId && (
-            <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm bg-indigo-50/10">
-              <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                Parent Account Linked
-              </h4>
-              <p className="text-[11px] text-slate-500 leading-relaxed">
-                Your profile is linked to parent terminal (ID: <span className="font-semibold text-slate-700">{user.parentId}</span>). Progress reports are automatically synced.
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Right Columns: Active Lesson Player Terminal */}
-        <div className="lg:col-span-2 space-y-6">
-          {selectedCourse ? (
-            <div className="bg-white p-8 rounded-lg border border-slate-200 shadow-sm space-y-6">
-              
-              {/* Course Header with Progress */}
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-6">
-                <div>
-                  <h2 className="text-xl font-bold text-slate-900">
-                    {selectedCourse.courseTitle}
-                  </h2>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Academic Course | Instructor: Professor Tech
-                  </p>
-                </div>
-                
-                {progress && (
-                  <div className="flex items-center gap-3">
-                    {progress.completed && (
-                      <button
-                        onClick={() => setShowCertificate(true)}
-                        className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded shadow-sm cursor-pointer"
-                      >
-                        Claim Certificate
-                      </button>
+              return (
+                <div key={courseId} className="card overflow-hidden group bg-white border border-slate-200 rounded-lg">
+                  <div className="relative aspect-video bg-slate-100">
+                    <img
+                      src={course.courseThumbnail || 'https://images.unsplash.com/photo-1587620962725-abab19836100?w=400&h=225&fit=crop'}
+                      alt={course.courseTitle}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://images.unsplash.com/photo-1587620962725-abab19836100?w=400&h=225&fit=crop';
+                      }}
+                    />
+                    {prog?.completed && (
+                      <div className="absolute top-2 right-2 bg-emerald-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                        Completed
+                      </div>
                     )}
-                    <div className="bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-lg flex items-center gap-4">
-                      <div>
-                        <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Progress</div>
-                        <div className="text-sm font-bold text-slate-700">
-                          {progress.completedLessons?.length || 0} / {selectedCourse.lessons?.length || 0} Complete
-                        </div>
-                      </div>
-                      <div className="w-16 h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-indigo-600"
-                          style={{
-                            width: `${
-                              selectedCourse.lessons?.length
-                                ? ((progress.completedLessons?.length || 0) / selectedCourse.lessons.length) * 100
-                                : 0
-                             }%`,
-                          }}
-                        />
-                      </div>
-                    </div>
                   </div>
-                )}
-              </div>
+                  <div className="p-4 space-y-3">
+                    {course.category && (
+                      <span className="text-xs font-semibold text-indigo-600 uppercase">{course.category}</span>
+                    )}
+                    <h3 className="font-semibold text-slate-900 text-sm leading-snug line-clamp-2">{course.courseTitle}</h3>
 
-              {/* Course Content Player */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                
-                {/* Lesson List Column */}
-                <div className="space-y-2 md:border-r md:border-slate-100 md:pr-6">
-                  <h3 className="text-xs font-bold uppercase text-slate-400 tracking-wider mb-2">
-                    Lessons List
-                  </h3>
-                  {selectedCourse.lessons?.map((lesson: any, index: number) => {
-                    const isCompleted = progress?.completedLessons?.includes(lesson.lessonId);
-                    const isSelected = selectedLesson?.lessonId === lesson.lessonId;
-                    return (
-                      <button
-                        key={lesson.lessonId}
-                        onClick={() => setSelectedLesson(lesson)}
-                        className={`w-full text-left p-3 rounded-lg flex items-center justify-between text-xs font-semibold transition-all cursor-pointer ${
-                          isSelected
-                            ? 'bg-indigo-50 text-indigo-700 font-bold'
-                            : 'hover:bg-slate-50 text-slate-600'
-                        }`}
-                      >
-                        <span className="truncate pr-2">
-                          {index + 1}. {lesson.lessonTitle}
-                        </span>
-                        {isCompleted ? (
-                          <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                        ) : (
-                          <Circle className="w-4 h-4 text-slate-300 flex-shrink-0" />
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Lesson Detail / Player Column */}
-                <div className="md:col-span-2 space-y-6">
-                  {selectedLesson ? (
-                    <div className="space-y-6">
-                      <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                        <div>
-                          <h4 className="text-base font-bold text-slate-900">
-                            {selectedLesson.lessonTitle}
-                          </h4>
-                          <span className="inline-block mt-1 bg-slate-50 border border-slate-200 px-2.5 py-0.5 rounded text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                            Type: {selectedLesson.lessonType}
-                          </span>
-                        </div>
-
-                        {/* Interactive Message Button */}
-                        <Link
-                          href={`/chat?tutorId=${selectedCourse.educator}`}
-                          className="p-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg flex items-center gap-1.5 text-xs font-bold transition-all"
-                        >
-                          <MessageCircle className="w-4 h-4" /> Ask Instructor
-                        </Link>
+                    {/* Progress */}
+                    <div>
+                      <div className="flex items-center justify-between text-xs text-slate-500 mb-1.5">
+                        <span>{completedLessons}/{totalLessons} lessons</span>
+                        <span className="font-semibold text-slate-700">{pct}%</span>
                       </div>
-
-                      {/* Lesson Dynamic Content Display */}
-                      <div className="bg-slate-50 p-6 rounded-lg border border-slate-200 space-y-4">
-                        {selectedLesson.lessonType === 'pdf' && (
-                          <div className="space-y-4 text-center py-6">
-                            <FileText className="w-16 h-16 text-red-500 mx-auto" />
-                            <p className="text-xs text-slate-600 font-semibold">PDF Reference Study Document is ready.</p>
-                            <a
-                              href={selectedLesson.pdfUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="inline-flex items-center gap-1.5 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded text-xs font-bold hover:bg-slate-50 shadow-sm"
-                            >
-                              OPEN REFERENCE PDF <ExternalLink className="w-4 h-4" />
-                            </a>
-                          </div>
-                        )}
-
-                        {selectedLesson.lessonType === 'link' && (
-                          <div className="space-y-4 text-center py-6">
-                            <BookOpen className="w-16 h-16 text-blue-500 mx-auto" />
-                            <p className="text-xs text-slate-600 font-semibold">External reference web URL provided.</p>
-                            <a
-                              href={selectedLesson.webLink}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="inline-flex items-center gap-1.5 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded text-xs font-bold hover:bg-slate-50 shadow-sm"
-                            >
-                              LAUNCH WEB REFERENCE <ExternalLink className="w-4 h-4" />
-                            </a>
-                          </div>
-                        )}
-
-                        {selectedLesson.lessonType === 'online' && (
-                          <div className="space-y-4">
-                            <div className="flex items-center gap-3">
-                              <Video className="w-10 h-10 text-indigo-600 animate-pulse" />
-                              <div>
-                                <h5 className="text-[10px] font-bold text-slate-400 uppercase">Live Stream Schedule</h5>
-                                <p className="text-xs text-slate-700 font-bold">
-                                  {selectedLesson.timeSchedule ? new Date(selectedLesson.timeSchedule).toLocaleString() : 'Not Scheduled'}
-                                </p>
-                              </div>
-                            </div>
-                            <p className="text-xs text-slate-500 leading-relaxed">
-                              This lesson is live stream-based. Access the official Google Meet room during the designated time.
-                            </p>
-                            <a
-                              href={selectedLesson.meetLink || '#'}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 text-white rounded text-xs font-bold hover:bg-indigo-700 shadow-sm"
-                            >
-                              JOIN GOOGLE MEET ROOM <ExternalLink className="w-4 h-4" />
-                            </a>
-                          </div>
-                        )}
-
-                        {selectedLesson.lessonType === 'offline' && (
-                          <div className="space-y-4">
-                            <div className="flex items-center gap-3">
-                              <MapPin className="w-10 h-10 text-indigo-600" />
-                              <div>
-                                <h5 className="text-[10px] font-bold text-slate-400 uppercase">Offline Lab Address</h5>
-                                <p className="text-xs text-slate-700 font-bold">
-                                  {selectedLesson.locationDetails || 'Main Auditorium'}
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-3">
-                              <Calendar className="w-10 h-10 text-slate-400" />
-                              <div>
-                                <h5 className="text-[10px] font-bold text-slate-400 uppercase">Schedule Detail</h5>
-                                <p className="text-xs text-slate-700 font-bold">
-                                  {selectedLesson.timeSchedule ? new Date(selectedLesson.timeSchedule).toLocaleString() : 'Not Set'}
-                                </p>
-                              </div>
-                            </div>
-                            <p className="text-xs text-slate-500 leading-relaxed">
-                              This is an offline classroom session. Please attend in person at the location specified above.
-                            </p>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Tutors Assigned details */}
-                      {selectedLesson.tutors && selectedLesson.tutors.length > 0 && (
-                        <div className="space-y-2">
-                          <h5 className="text-xs font-bold uppercase text-slate-400 tracking-wider">
-                            Assigned Instructors
-                          </h5>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            {selectedLesson.tutors.map((t: any, idx: number) => (
-                              <div
-                                key={idx}
-                                className="bg-white border border-slate-200 p-3 rounded-lg flex items-center gap-3 shadow-sm"
-                              >
-                                <img
-                                  src={t.imageUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${t.name}`}
-                                  alt={t.name}
-                                  className="w-8 h-8 rounded-full border border-indigo-100"
-                                />
-                                <div>
-                                  <div className="text-xs font-bold text-slate-800">{t.name}</div>
-                                  <div className="text-[10px] text-slate-500">{t.email}</div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Interactive Quiz Verification Widget */}
-                      {selectedLesson.quizQuestion && (
-                        <div className="bg-indigo-50/50 p-6 rounded-xl border border-indigo-100 space-y-4">
-                          <h5 className="text-xs font-bold uppercase text-indigo-700 tracking-wider flex items-center gap-1.5">
-                            Quiz Progress Check
-                          </h5>
-                          <p className="text-xs text-slate-800 font-semibold">{selectedLesson.quizQuestion}</p>
-                          <div className="space-y-2">
-                            {selectedLesson.quizOptions?.map((option: string, oIdx: number) => {
-                              const isSelected = quizSelectedOption === oIdx;
-                              let btnClass = "w-full text-left p-3 rounded-lg text-xs transition-all border cursor-pointer ";
-                              if (quizChecked) {
-                                if (oIdx === selectedLesson.quizCorrectIndex) {
-                                  btnClass += "bg-emerald-50 border-emerald-300 text-emerald-700 font-semibold";
-                                } else if (isSelected) {
-                                  btnClass += "bg-red-50 border-red-200 text-red-600";
-                                } else {
-                                  btnClass += "bg-white border-slate-200 text-slate-400";
-                                }
-                              } else {
-                                btnClass += isSelected 
-                                  ? "bg-indigo-600 border-indigo-600 text-white font-semibold"
-                                  : "bg-white border-slate-200 text-slate-700 hover:border-slate-300";
-                              }
-                              return (
-                                <button
-                                  key={oIdx}
-                                  type="button"
-                                  disabled={quizChecked}
-                                  onClick={() => setQuizSelectedOption(oIdx)}
-                                  className={btnClass}
-                                >
-                                  {option}
-                                </button>
-                              );
-                            })}
-                          </div>
-
-                          {!quizChecked ? (
-                            <button
-                              type="button"
-                              disabled={quizSelectedOption === null}
-                              onClick={() => {
-                                  setQuizChecked(true);
-                                  if (quizSelectedOption === selectedLesson.quizCorrectIndex) {
-                                    setQuizPassed(true);
-                                  }
-                              }}
-                              className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-xs font-bold uppercase text-white rounded-lg shadow-sm transition-all disabled:opacity-50 cursor-pointer"
-                            >
-                              Verify Answer
-                            </button>
-                          ) : (
-                            <div className="flex justify-between items-center text-xs">
-                              {quizPassed ? (
-                                <span className="text-emerald-700 font-bold">✓ Response verified. Progression unlocked.</span>
-                              ) : (
-                                <span className="text-red-600 font-bold">✗ Incorrect answer. Please try again.</span>
-                              )}
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setQuizSelectedOption(null);
-                                  setQuizChecked(false);
-                                  setQuizPassed(false);
-                                }}
-                                className="text-indigo-600 hover:underline font-bold uppercase tracking-wider text-[10px] cursor-pointer"
-                              >
-                                Retry Quiz
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Completion Toggle */}
-                      <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                        <span className="text-xs text-slate-500 font-semibold">
-                          {selectedLesson.quizQuestion && !progress?.completedLessons?.includes(selectedLesson.lessonId) && !quizPassed 
-                            ? 'Complete Quiz to evaluate' 
-                            : 'Verify lesson to continue'}
-                        </span>
-                        <button
-                          onClick={() =>
-                            toggleLessonCompletion(
-                              selectedLesson.lessonId,
-                              progress?.completedLessons?.includes(selectedLesson.lessonId),
-                            )
-                          }
-                          disabled={selectedLesson.quizQuestion && !progress?.completedLessons?.includes(selectedLesson.lessonId) && !quizPassed}
-                          className={`px-4 py-2 rounded text-xs font-bold uppercase tracking-wider border transition-all flex items-center gap-2 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
-                            progress?.completedLessons?.includes(selectedLesson.lessonId)
-                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                              : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
-                          }`}
-                        >
-                          {progress?.completedLessons?.includes(selectedLesson.lessonId) ? (
-                            <>
-                              Completed <CheckCircle className="w-4 h-4 text-emerald-500" />
-                            </>
-                          ) : (
-                            <>
-                              Mark Completed <Circle className="w-4 h-4" />
-                            </>
-                          )}
-                        </button>
+                      <div className="progress-bar">
+                        <div className="progress-fill" style={{ width: `${pct}%` }} />
                       </div>
                     </div>
-                  ) : (
-                    <div className="text-center py-12">
-                      <p className="text-xs text-slate-400 font-bold uppercase">
-                        Select a lesson to start learning
-                      </p>
-                    </div>
-                  )}
+
+                    <Link
+                      href={`/courses/${courseId}`}
+                      className="btn-primary w-full text-sm"
+                    >
+                      {pct > 0 ? 'Continue Learning' : 'Start Course'} <ChevronRight className="w-4 h-4" />
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ) : (
-            <div className="bg-white p-12 text-center rounded-lg border border-slate-200 shadow-sm">
-              <p className="text-sm text-slate-400 font-bold uppercase">
-                Please select a course to load the syllabus.
-              </p>
-            </div>
-          )}
+              );
+            })}
+          </div>
+        )}
+
+        {/* Discover section */}
+        <div className="mt-10 p-6 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <h3 className="font-bold text-lg">Discover new courses</h3>
+            <p className="text-indigo-100 text-sm mt-0.5">100+ expert-led courses available across 20+ subjects</p>
+          </div>
+          <Link href="/courses" className="px-6 py-3 bg-white text-indigo-700 font-bold rounded-xl hover:bg-indigo-50 transition-colors whitespace-nowrap text-sm">
+            Browse All Courses
+          </Link>
         </div>
-      </main>
-
-      {/* Certificate Modal */}
-      {showCertificate && selectedCourse && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-6">
-          <motion.div
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="w-full max-w-2xl bg-white border-8 border-double border-amber-800 rounded-xl p-8 md:p-12 text-center space-y-6 shadow-2xl relative"
-          >
-            <div className="absolute top-4 right-4">
-              <button
-                onClick={() => setShowCertificate(false)}
-                className="text-slate-400 hover:text-slate-700 font-bold text-xs uppercase cursor-pointer"
-              >
-                Close [x]
-              </button>
-            </div>
-            
-            <div className="mx-auto w-16 h-16 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center">
-              <Award className="w-8 h-8 text-amber-700" />
-            </div>
-
-            <div className="space-y-1">
-              <h3 className="text-xs text-amber-700 font-bold uppercase tracking-widest font-mono">Certificate of Graduation</h3>
-              <h2 className="text-3xl font-serif font-black text-slate-900">EDEMY</h2>
-            </div>
-
-            <div className="border-y border-slate-100 py-8 space-y-4">
-              <p className="text-xs text-slate-400 italic">This is to verify that student</p>
-              <h4 className="text-2xl font-bold text-indigo-700 font-serif">{user?.name}</h4>
-              <p className="text-xs text-slate-400 italic">has successfully completed the complete requirements for</p>
-              <h5 className="text-lg font-bold text-slate-900 uppercase font-sans">{selectedCourse.courseTitle}</h5>
-            </div>
-
-            <div className="flex justify-between items-center text-[10px] text-slate-400 font-mono">
-              <span>ISSUED BY: EDEMY EDUCATION</span>
-              <span>VERIFICATION ID: #{Math.random().toString(36).substring(2, 10).toUpperCase()}</span>
-            </div>
-          </motion.div>
-        </div>
-      )}
+      </div>
     </div>
   );
 }

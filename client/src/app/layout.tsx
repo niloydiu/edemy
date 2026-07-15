@@ -2,26 +2,23 @@ import './globals.css';
 import { AuthProvider } from '@/context/AuthContext';
 
 export const metadata = {
-  title: 'Edemy 🎓 | Futuristic Cyber Learning Platform',
-  description: 'A Next-Generation interactive LMS featuring AI components, live schedules, parent monitoring, and glowing neon aesthetics.',
+  title: 'Edemy — Learn Skills That Matter',
+  description: 'Access 100+ expert-led courses in Web Development, Data Science, AI, Design, and more. Learn online, offline, or hybrid.',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet"
+        />
       </head>
-      <body className="cyber-grid min-h-screen bg-background text-gray-100 antialiased">
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+      <body className="min-h-screen bg-white text-slate-900 antialiased">
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
