@@ -32,7 +32,7 @@ import { AppController } from './app.controller';
             url,
             entities: [User, Course, Lesson, Rating, Progress, Purchase, Message],
             synchronize: true,
-            ssl: url.includes('neon') ? { rejectUnauthorized: false } : false,
+            ssl: !url.includes('localhost') && !url.includes('127.0.0.1') ? { rejectUnauthorized: false } : false,
             logging: false,
           };
         }
