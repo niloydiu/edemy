@@ -1,3 +1,4 @@
+require('pg');
 const { NestFactory } = require('@nestjs/core');
 const { AppModule } = require('../dist/app.module');
 const express = require('express');
