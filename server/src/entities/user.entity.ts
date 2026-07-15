@@ -11,6 +11,9 @@ export class User {
   @Column({ type: 'varchar', length: 255, unique: true })
   email: string;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  password?: string;
+
   @Column({ type: 'text', nullable: true })
   imageUrl: string;
 
@@ -25,6 +28,9 @@ export class User {
 
   @Column({ type: 'simple-array', nullable: true, default: '' })
   enrolledCourses: string[];
+
+  @Column({ type: 'simple-array', nullable: true, default: '' })
+  wishlist: string[];
 
   @CreateDateColumn()
   createdAt: Date;

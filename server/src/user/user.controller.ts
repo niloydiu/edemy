@@ -20,6 +20,11 @@ export class UserController {
     return this.userService.findOne(req.user.sub);
   }
 
+  @Post('wishlist')
+  async toggleWishlist(@Req() req: any, @Body() body: { courseId: string }) {
+    return this.userService.toggleWishlist(req.user.sub, body.courseId);
+  }
+
   @Get('parent/students')
   @Roles('parent', 'admin')
   async getStudents(@Req() req: any) {

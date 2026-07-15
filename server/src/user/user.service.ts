@@ -53,4 +53,17 @@ export class UserService {
     );
     return students.filter(Boolean);
   }
+
+  async toggleWishlist(userId: string, courseId: string) {
+    const user = await this.findOne(userId);
+    const wishlist = user.wishlist || [];
+    const idx = wishlist.indexOf(courseId);
+    if (idx === -1) {
+      user.wishlist = [...wishlist, courseId];
+    } else {
+      user.wishlist = wishlist.filter(id => id !== courseId);
+    }
+    await this.userRepo.save(user);
+    return user;
+  }
 }

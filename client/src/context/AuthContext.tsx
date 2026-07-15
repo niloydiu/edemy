@@ -12,6 +12,7 @@ interface User {
   studentIds?: string[];
   parentId?: string;
   enrolledCourses?: string[];
+  wishlist?: string[];
 }
 
 interface AuthContextType {
@@ -20,6 +21,8 @@ interface AuthContextType {
   loading: boolean;
   loginDemo: (role: 'student' | 'teacher' | 'parent' | 'admin') => Promise<void>;
   loginCustom: (googleId: string, email: string, name: string, role: 'student' | 'teacher' | 'parent' | 'admin') => Promise<void>;
+  loginEmail: (email: string, password?: string) => Promise<void>;
+  registerEmail: (email: string, name: string, password?: string, role?: 'student' | 'teacher' | 'parent' | 'admin') => Promise<void>;
   logout: () => void;
   api: any;
   refreshProfile: () => Promise<void>;
@@ -100,6 +103,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const loginEmail = async (email: string, password?: string) => {
+    setLoading(true);
+    try {
+      const res = await axios.post(`${API_BASE}/auth/login`, {
+        email,
+        password,
+      });
+      const { token: jwtToken, user: loggedUser } = res.data;
+      setToken(jwtToken);
+      setUser(loggedUser);
+      localStorage.setItem('edemy_token', jwtToken);
+      localStorage.setItem('edemy_user', JSON.stringify(loggedUser));
+    } catch (err) {
+      console.error('Email login error:', err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const registerEmail = async (email: string, name: string, password?: string, role?: 'student' | 'teacher' | 'parent' | 'admin') => {
+    setLoading(true);
+    try {
+      const res = await axios.post(`${API_BASE}/auth/register`, {
+        email,
+        name,
+        password,
+        role: role || 'student',
+      });
+      const { token: jwtToken, user: loggedUser } = res.data;
+      setToken(jwtToken);
+      setUser(loggedUser);
+      localStorage.setItem('edemy_token', jwtToken);
+      localStorage.setItem('edemy_user', JSON.stringify(loggedUser));
+    } catch (err) {
+      console.error('Email register error:', err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
     setToken(null);
     setUser(null);
@@ -130,7 +175,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   });
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, loginDemo, loginCustom, logout, api, refreshProfile }}>
+    <AuthContext.Provider value={{ user, token, loading, loginDemo, loginCustom, loginEmail, registerEmail, logout, api, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );

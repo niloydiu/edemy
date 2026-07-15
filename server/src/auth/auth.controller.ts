@@ -9,4 +9,14 @@ export class AuthController {
   async googleLogin(@Body() body: { googleId: string; email: string; name: string; imageUrl: string; role?: string }) {
     return this.authService.googleLogin(body);
   }
+
+  @Post('login')
+  async emailLogin(@Body() body: { email: string; password?: string }) {
+    return this.authService.emailLogin(body);
+  }
+
+  @Post('register')
+  async emailRegister(@Body() body: { email: string; name: string; password?: string; role?: string }) {
+    return this.authService.emailRegister(body);
+  }
 }

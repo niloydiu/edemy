@@ -24,17 +24,17 @@ const CATEGORIES = [
 
 const TESTIMONIALS = [
   {
-    name: 'Sarah Chen', role: 'Frontend Developer at Google', rating: 5,
+    name: 'Sarah Chen', role: 'Sample Success Story (React Bootcamp Alumnus)', rating: 5,
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop',
-    text: 'Edemy completely transformed my career. I landed my dream job at Google 3 months after finishing the React Bootcamp. The offline lab sessions were incredibly effective.',
+    text: 'Edemy completely transformed my career. I landed my dream job 3 months after finishing the React Bootcamp. The offline lab sessions were incredibly effective.',
   },
   {
-    name: 'Marcus Johnson', role: 'Data Scientist at Netflix', rating: 5,
+    name: 'Marcus Johnson', role: 'Sample Success Story (Data Science Alumnus)', rating: 5,
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop',
     text: 'The Data Science track is world-class. Real projects, live online sessions with tutors, and offline workshops that helped me build an actual portfolio. Best investment ever.',
   },
   {
-    name: 'Priya Patel', role: 'UX Lead at Airbnb', rating: 5,
+    name: 'Priya Patel', role: 'Sample Success Story (UX Design Alumnus)', rating: 5,
     avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop',
     text: 'I\'ve tried Udemy, Coursera — Edemy\'s hybrid approach (online + offline + PDF resources) is simply unmatched. The parent monitoring feature let my family support my learning journey.',
   },
@@ -111,7 +111,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
       <Navbar />
 
       {/* ════════ HERO ════════ */}
@@ -214,14 +214,14 @@ export default function Home() {
       </section>
 
       {/* ════════ TRUSTED BY ════════ */}
-      <section className="border-b border-slate-100 bg-slate-50 py-8">
+      <section className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-xs font-semibold text-slate-400 uppercase tracking-widest mb-6">
+          <p className="text-center text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-6">
             Trusted by professionals at leading companies
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-8 opacity-40 grayscale">
+          <div className="flex flex-wrap items-center justify-center gap-8 opacity-40 grayscale dark:invert">
             {['Google', 'Microsoft', 'Amazon', 'Meta', 'Apple', 'Netflix', 'Stripe', 'Airbnb'].map(c => (
-              <span key={c} className="text-lg font-black text-slate-700 tracking-tight">{c}</span>
+              <span key={c} className="text-lg font-black text-slate-700 dark:text-slate-300 tracking-tight">{c}</span>
             ))}
           </div>
         </div>
@@ -237,8 +237,8 @@ export default function Home() {
               </p>
               <h2 className="section-title">Explore by subject</h2>
             </div>
-            <Link href="/courses" className="hidden sm:flex items-center gap-1 text-indigo-600 font-semibold text-sm hover:underline">
-              View all <ChevronRight className="w-4 h-4" />
+            <Link href="/courses" className="hidden sm:flex items-center gap-1 text-indigo-600 dark:text-indigo-400 font-semibold text-sm hover:underline">
+              Browse All Subjects <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
 
@@ -252,10 +252,10 @@ export default function Home() {
                 transition={{ delay: i * 0.07 }}
               >
                 <Link href={`/courses?category=${encodeURIComponent(cat.name)}`}
-                  className="group flex flex-col items-center p-5 rounded-xl border border-slate-200 bg-white hover:border-indigo-200 hover:shadow-md hover:shadow-indigo-50 transition-all duration-200 text-center cursor-pointer">
+                  className="group flex flex-col items-center p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-indigo-200 dark:hover:border-indigo-700 hover:shadow-md hover:shadow-indigo-50/20 transition-all duration-200 text-center cursor-pointer">
                   <span className="text-3xl mb-3">{cat.icon}</span>
-                  <span className="font-semibold text-slate-800 text-sm group-hover:text-indigo-700 transition-colors">{cat.name}</span>
-                  <span className="text-xs text-slate-500 mt-1">{cat.count}</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200 text-sm group-hover:text-indigo-700 dark:group-hover:text-indigo-400 transition-colors">{cat.name}</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 mt-1">{cat.count}</span>
                 </Link>
               </motion.div>
             ))}
@@ -264,7 +264,7 @@ export default function Home() {
       </section>
 
       {/* ════════ FEATURED COURSES ════════ */}
-      <section className="py-16 bg-slate-50">
+      <section className="py-16 bg-slate-50 dark:bg-slate-900/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-10">
             <div>
@@ -273,7 +273,7 @@ export default function Home() {
               </p>
               <h2 className="section-title">Featured Courses</h2>
             </div>
-            <Link href="/courses" className="btn-secondary text-sm">
+            <Link href="/courses" className="btn-secondary dark:bg-slate-800 dark:border-slate-700 dark:text-white text-sm">
               All Courses <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -310,8 +310,8 @@ export default function Home() {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.08 }}
                   >
-                    <Link href={`/courses/${course._id || course.id}`} className="course-card group block bg-white border border-slate-200 rounded-lg overflow-hidden">
-                      <div className="relative overflow-hidden aspect-video bg-slate-100">
+                    <Link href={`/courses/${course._id || course.id}`} className="course-card group block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden">
+                      <div className="relative overflow-hidden aspect-video bg-slate-100 dark:bg-slate-800">
                         <img
                           src={course.courseThumbnail || `https://images.unsplash.com/photo-1587620962725-abab19836100?w=400&h=225&fit=crop`}
                           alt={course.courseTitle}
@@ -328,28 +328,28 @@ export default function Home() {
                       </div>
                       <div className="p-4 space-y-2 flex flex-col h-full">
                         {course.category && (
-                          <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wide">{course.category}</span>
+                          <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide">{course.category}</span>
                         )}
-                        <h3 className="font-bold text-slate-900 text-sm leading-snug line-clamp-2 group-hover:text-indigo-700 transition-colors">
+                        <h3 className="font-bold text-slate-900 dark:text-white text-sm leading-snug line-clamp-2 group-hover:text-indigo-700 dark:group-hover:text-indigo-400 transition-colors">
                           {course.courseTitle}
                         </h3>
-                        <div className="flex items-center gap-2 text-xs text-slate-500">
+                        <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                           <Clock className="w-3.5 h-3.5" />
                           <span>{lessonCount} lessons</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                          <span className="text-amber-600 font-bold text-xs">{Number(avgRating).toFixed(1)}</span>
+                          <span className="text-amber-600 dark:text-amber-400 font-bold text-xs">{Number(avgRating).toFixed(1)}</span>
                           <StarRating rating={avgRating} />
-                          <span className="text-xs text-slate-400">({course.ratings?.length || 0})</span>
+                          <span className="text-xs text-slate-400 dark:text-slate-550">({course.ratings?.length || 0})</span>
                         </div>
-                        <div className="flex items-center justify-between mt-auto pt-2 border-t border-slate-100">
+                        <div className="flex items-center justify-between mt-auto pt-2 border-t border-slate-100 dark:border-slate-800">
                           <div className="flex items-baseline gap-1.5">
-                            <span className="font-bold text-slate-900 text-base">${Number(finalPrice).toFixed(2)}</span>
+                            <span className="font-bold text-slate-900 dark:text-white text-base">${Number(finalPrice).toFixed(2)}</span>
                             {course.discount > 0 && (
                               <span className="text-xs text-slate-400 line-through">${Number(course.coursePrice).toFixed(2)}</span>
                             )}
                           </div>
-                          <span className="text-xs font-semibold text-indigo-600 group-hover:underline flex items-center gap-0.5">
+                          <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 group-hover:underline flex items-center gap-0.5">
                             Enroll <ArrowRight className="w-3 h-3" />
                           </span>
                         </div>
@@ -390,7 +390,12 @@ export default function Home() {
                   <f.icon className={`w-6 h-6 ${f.color}`} />
                 </div>
                 <h3 className="font-bold text-slate-900 mb-2">{f.title}</h3>
-                <p className="text-slate-500 text-sm leading-relaxed">{f.desc}</p>
+                <p className="text-slate-500 text-sm leading-relaxed mb-2">{f.desc}</p>
+                {f.title === 'Progress Tracking' && (
+                  <Link href="/dashboard-preview" className="text-xs text-indigo-650 hover:underline font-bold inline-flex items-center gap-1">
+                    Try interactive preview &rarr;
+                  </Link>
+                )}
               </motion.div>
             ))}
           </div>
@@ -502,16 +507,21 @@ export default function Home() {
               </p>
             </div>
             {[
-              { title: 'Platform', links: ['Browse Courses', 'Become a Tutor', 'For Parents', 'Certificates'] },
-              { title: 'Company', links: ['About Us', 'Blog', 'Careers', 'Press'] },
-              { title: 'Support', links: ['Help Center', 'Contact Us', 'Privacy Policy', 'Terms of Service'] },
+              {
+                title: 'Platform',
+                links: [
+                  { label: 'Browse Courses', href: '/courses' },
+                  { label: 'Become a Tutor', href: '/auth/login' },
+                  { label: 'For Parents', href: '/auth/login' }
+                ]
+              }
             ].map(col => (
               <div key={col.title}>
                 <p className="text-white font-semibold text-sm mb-4">{col.title}</p>
                 <ul className="space-y-3">
                   {col.links.map(l => (
-                    <li key={l}>
-                      <a href="#" className="text-sm text-slate-400 hover:text-white transition-colors">{l}</a>
+                    <li key={l.label}>
+                      <Link href={l.href} className="text-sm text-slate-400 hover:text-white transition-colors">{l.label}</Link>
                     </li>
                   ))}
                 </ul>
@@ -522,7 +532,7 @@ export default function Home() {
             <p className="text-xs text-slate-500">© {new Date().getFullYear()} Edemy Platforms Inc. All rights reserved.</p>
             <div className="flex items-center gap-2">
               <Shield className="w-4 h-4 text-slate-500" />
-              <span className="text-xs text-slate-500">SOC 2 Type II Certified • GDPR Compliant</span>
+              <span className="text-xs text-slate-500">Demo Platform • Secure SSL Connection</span>
             </div>
           </div>
         </div>

@@ -2,6 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --background: #f8fafc;
+  --text: #0f172a;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+  --nav-bg: rgba(255, 255, 255, 0.9);
+  --header-bg: #ffffff;
+  --footer-bg: #0f172a;
+  --footer-text: #94a3b8;
+}
+
+.dark {
+  --background: #0b0f19;
+  --text: #f1f5f9;
+  --card-bg: #111827;
+  --card-border: #1f2937;
+  --input-bg: #1f2937;
+  --input-border: #374151;
+  --nav-bg: rgba(11, 15, 25, 0.9);
+  --header-bg: #111827;
+  --footer-bg: #030712;
+  --footer-text: #6b7280;
+}
+
 @layer base {
   * {
     box-sizing: border-box;
@@ -14,19 +40,20 @@
   }
 
   body {
-    background-color: #ffffff;
-    color: #1e293b;
+    background-color: var(--background);
+    color: var(--text);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s, color 0.3s;
   }
 }
 
 @layer components {
   /* === CARDS === */
   .card {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
     border-radius: 12px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
     transition: all 0.2s ease-in-out;
@@ -35,12 +62,12 @@
   .card:hover {
     box-shadow: 0 8px 25px rgba(0,0,0,0.1);
     transform: translateY(-2px);
-    border-color: #cbd5e1;
+    border-color: var(--card-border);
   }
 
   .card-flat {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
     border-radius: 12px;
   }
 
@@ -130,8 +157,8 @@
 
   /* === COURSE CARD === */
   .course-card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
     border-radius: 12px;
     overflow: hidden;
     transition: all 0.25s ease;
@@ -143,7 +170,7 @@
   .course-card:hover {
     box-shadow: 0 12px 32px rgba(0,0,0,0.12);
     transform: translateY(-4px);
-    border-color: #d1d5db;
+    border-color: var(--card-border);
   }
 
   .course-card-img {
@@ -190,11 +217,11 @@
   .input {
     width: 100%;
     padding: 0.625rem 0.875rem;
-    background: #ffffff;
-    border: 1.5px solid #d1d5db;
+    background: var(--input-bg);
+    border: 1.5px solid var(--input-border);
     border-radius: 8px;
     font-size: 0.9rem;
-    color: #111827;
+    color: var(--text);
     transition: border-color 0.15s, box-shadow 0.15s;
     outline: none;
   }
@@ -223,13 +250,14 @@
   .section-title {
     font-size: 2rem;
     font-weight: 800;
-    color: #111827;
+    color: var(--text);
     line-height: 1.2;
   }
 
   .section-subtitle {
     font-size: 1rem;
-    color: #6b7280;
+    color: var(--text);
+    opacity: 0.8;
     line-height: 1.6;
     max-width: 42rem;
   }
@@ -268,14 +296,16 @@
     border-radius: 8px;
     font-size: 0.9rem;
     font-weight: 500;
-    color: #4b5563;
+    color: var(--text);
+    opacity: 0.8;
     cursor: pointer;
     transition: all 0.15s ease;
   }
 
   .sidebar-item:hover {
-    background: #f3f4f6;
-    color: #111827;
+    background: var(--card-border);
+    color: var(--text);
+    opacity: 1;
   }
 
   .sidebar-item.active {
