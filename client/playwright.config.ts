@@ -8,7 +8,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: 'https://ndemy-frontend.vercel.app',
     trace: 'on-first-retry',
   },
   projects: [
