@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
   BookOpen, Clock, Award, Play, CheckCircle, ChevronRight,
-  Square, CheckSquare, Sparkles, FileText, Info
+  Square, CheckSquare, Sparkles, FileText, Info, Download, ExternalLink
 } from 'lucide-react';
 
 const SAMPLE_COURSES = [
@@ -19,7 +19,7 @@ const SAMPLE_COURSES = [
     lessons: [
       { id: 'l1', title: 'Course Overview & Hydration Mechanics', type: 'video', duration: 15, videoUrl: 'https://www.youtube.com/watch?v=Ke90Tje7VS0' },
       { id: 'l2', title: 'React Server Components deep-dive', type: 'video', duration: 25, videoUrl: 'https://www.youtube.com/watch?v=Ke90Tje7VS0' },
-      { id: 'l3', title: 'Optimal Caching & Data Mutation rules', type: 'pdf', duration: 10 },
+      { id: 'l3', title: 'Optimal Caching & Data Mutation rules', type: 'pdf', duration: 10, pdfUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
       { id: 'l4', title: 'Interactive QA with Instructors', type: 'online', duration: 60 }
     ]
   },
@@ -31,7 +31,7 @@ const SAMPLE_COURSES = [
     thumbnail: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=225&fit=crop',
     lessons: [
       { id: 'l5', title: 'Introduction to Data Warehouses', type: 'video', duration: 20, videoUrl: 'https://www.youtube.com/watch?v=Ke90Tje7VS0' },
-      { id: 'l6', title: 'Building DBT Transformations', type: 'pdf', duration: 15 }
+      { id: 'l6', title: 'Building DBT Transformations', type: 'pdf', duration: 15, pdfUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' }
     ]
   }
 ];
@@ -118,7 +118,24 @@ export default function DashboardPreviewPage() {
                     <FileText className="w-16 h-16 text-indigo-500 mx-auto" />
                     <div>
                       <h4 className="font-bold text-white text-base">{selectedLesson.title}</h4>
-                      <p className="text-xs text-slate-500 mt-1 uppercase font-semibold">Study guide document loaded in resources</p>
+                      <p className="text-xs text-slate-505 mt-1 uppercase font-semibold">Study guide document loaded in resources</p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row justify-center gap-3 pt-2">
+                      <a
+                        href={(selectedLesson as any).pdfUrl || 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'}
+                        download
+                        className="flex items-center justify-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold transition-all border border-slate-700"
+                      >
+                        <Download className="w-4 h-4" /> Download Document
+                      </a>
+                      <a
+                        href={(selectedLesson as any).pdfUrl || 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all"
+                      >
+                        <ExternalLink className="w-4 h-4" /> Open in Browser
+                      </a>
                     </div>
                   </div>
                 )}
