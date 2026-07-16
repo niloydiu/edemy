@@ -44,7 +44,43 @@ export class CourseService {
     }
 
     const courses = await qb.getMany();
-    let enriched = await Promise.all(courses.map(c => this.enrichCourse(c)));
+    if (courses.length === 0) return [];
+
+    const courseIds = courses.map(c => c.id);
+    
+    // Fetch all lessons and ratings in 2 batch queries instead of 1100+ sequential queries
+    const allLessons = await this.lessonRepo.find({
+      where: { courseId: In(courseIds) },
+      order: { sortOrder: 'ASC' }
+    });
+
+    const allRatings = await this.ratingRepo.find({
+      where: { courseId: In(courseIds) }
+    });
+
+    // Map using in-memory groups
+    const lessonsMap = new Map<number, any[]>();
+    for (const lesson of allLessons) {
+      if (!lessonsMap.has(lesson.courseId)) {
+        lessonsMap.set(lesson.courseId, []);
+      }
+      lessonsMap.get(lesson.courseId).push(lesson);
+    }
+
+    const ratingsMap = new Map<number, any[]>();
+    for (const rating of allRatings) {
+      if (!ratingsMap.has(rating.courseId)) {
+        ratingsMap.set(rating.courseId, []);
+      }
+      ratingsMap.get(rating.courseId).push(rating);
+    }
+
+    let enriched = courses.map(c => ({
+      ...c,
+      lessons: lessonsMap.get(c.id) || [],
+      ratings: ratingsMap.get(c.id) || [],
+      _id: c.id
+    }));
 
     if (type === 'online') {
       enriched = enriched.filter(c => Number(c.id) % 2 === 1);
