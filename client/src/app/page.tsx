@@ -497,9 +497,7 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-12">
             <div className="col-span-2">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center shadow-md shadow-indigo-500/20">
-                  <span className="text-white font-black text-lg select-none leading-none">N</span>
-                </div>
+                <img src="/logo.png" alt="Ndemy" className="w-8 h-8 rounded-lg object-contain" />
                 <span className="text-white font-bold text-xl">Ndemy</span>
               </div>
               <p className="text-sm text-slate-400 leading-relaxed max-w-xs">

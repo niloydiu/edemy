@@ -5,10 +5,10 @@ import { Metadata } from 'next';
 export const dynamic = 'force-dynamic';
 
 async function getCourse(id: string) {
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || 'https://lms-backend-chi-orcin.vercel.app/api';
   try {
     const res = await fetch(`${apiBase}/courses/${id}`, {
-      cache: 'no-store'
+      next: { revalidate: 60 }
     });
     if (!res.ok) return null;
     return await res.json();

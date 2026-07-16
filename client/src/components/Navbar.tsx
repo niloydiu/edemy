@@ -50,13 +50,35 @@ export default function Navbar() {
 
   const toggleDarkMode = () => {
     const newDark = !darkMode;
-    setDarkMode(newDark);
-    if (newDark) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
+    
+    // Add temporary transitioning class to html for fallback browsers
+    document.documentElement.classList.add('theme-transitioning');
+    
+    const applyThemeChange = () => {
+      setDarkMode(newDark);
+      if (newDark) {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      }
+    };
+
+    // Use Modern View Transitions API if supported
+    if (typeof document !== 'undefined' && 'startViewTransition' in document) {
+      // @ts-ignore
+      document.startViewTransition(() => {
+        applyThemeChange();
+        setTimeout(() => {
+          document.documentElement.classList.remove('theme-transitioning');
+        }, 500);
+      });
     } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
+      applyThemeChange();
+      setTimeout(() => {
+        document.documentElement.classList.remove('theme-transitioning');
+      }, 500);
     }
   };
 
@@ -85,9 +107,11 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center shadow-md shadow-indigo-500/20">
-              <span className="text-white font-black text-lg select-none leading-none">N</span>
-            </div>
+            <img
+              src="/logo.png"
+              alt="Ndemy Logo"
+              className="w-8 h-8 rounded-lg object-contain"
+            />
             <span className={`font-extrabold text-xl ${scrolled || !isHeroPage ? 'text-slate-900 dark:text-white' : 'text-white'}`}>
               Ndemy
             </span>
@@ -97,12 +121,10 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-1">
             {[
               { href: '/courses', label: 'Courses' },
-              { href: '/courses?type=online', label: 'Live Classes' },
-              { href: '/courses?type=offline', label: 'Workshops' },
+              { href: '/live-classes', label: 'Live Classes' },
+              { href: '/workshops', label: 'Workshops' },
             ].map(link => {
-              const isActive = link.href === '/courses'
-                ? pathname === '/courses' && !currentType
-                : pathname === '/courses' && currentType === (link.href.includes('online') ? 'online' : 'offline');
+              const isActive = pathname === link.href;
               return (
                 <Link
                   key={link.href}
@@ -240,12 +262,10 @@ export default function Navbar() {
           <div className="max-w-7xl mx-auto px-4 py-4 space-y-1">
             {[
               { href: '/courses', label: 'Courses' },
-              { href: '/courses?type=online', label: 'Live Classes' },
-              { href: '/courses?type=offline', label: 'Workshops' },
+              { href: '/live-classes', label: 'Live Classes' },
+              { href: '/workshops', label: 'Workshops' },
             ].map(link => {
-              const isActive = link.href === '/courses'
-                ? pathname === '/courses' && !currentType
-                : pathname === '/courses' && currentType === (link.href.includes('online') ? 'online' : 'offline');
+              const isActive = pathname === link.href;
               return (
                 <Link
                   key={link.href}

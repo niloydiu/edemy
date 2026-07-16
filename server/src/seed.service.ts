@@ -796,7 +796,154 @@ const COURSES_DATA = [
       { title: 'Live Negotiation Role Play', type: 'offline', duration: 90 },
     ],
   },
+  // ---- FREE COURSES (12 courses — all completely free) ----
+  {
+    courseTitle: 'Introduction to Web Development — FREE Starter Course',
+    courseDescription: 'Your first step into web development. Learn HTML, CSS, and basic JavaScript in this completely free introductory course. Perfect for absolute beginners with zero coding experience.',
+    coursePrice: 0, discount: 0, category: 'Web Development', level: 'Beginner', thumbIdx: 0,
+    lessons: [
+      { title: 'How the Web Works', type: 'pdf', duration: 15 },
+      { title: 'Your First HTML Page', type: 'online', duration: 45 },
+      { title: 'Styling with CSS', type: 'online', duration: 60 },
+      { title: 'Adding JavaScript Interactivity', type: 'pdf', duration: 30 },
+      { title: 'Publishing Your First Website', type: 'online', duration: 20 },
+    ],
+  },
+  {
+    courseTitle: 'Python Programming for Beginners — FREE',
+    courseDescription: 'Start your programming journey with Python — the most beginner-friendly language in the world. 100% free. Covers variables, loops, functions, and your first small projects.',
+    coursePrice: 0, discount: 0, category: 'Data Science', level: 'Beginner', thumbIdx: 1,
+    lessons: [
+      { title: 'Installing Python & Setting Up', type: 'pdf', duration: 15 },
+      { title: 'Variables, Data Types & Operators', type: 'online', duration: 50 },
+      { title: 'Control Flow: if/else & Loops', type: 'online', duration: 60 },
+      { title: 'Functions & Modules', type: 'pdf', duration: 40 },
+      { title: 'Mini Project: Build a Calculator', type: 'online', duration: 45 },
+    ],
+  },
+  {
+    courseTitle: 'Introduction to Artificial Intelligence — FREE',
+    courseDescription: 'Understand what AI really is — no math degree required. Free overview covering machine learning concepts, neural networks, ethical AI, and real-world applications.',
+    coursePrice: 0, discount: 0, category: 'Artificial Intelligence', level: 'Beginner', thumbIdx: 2,
+    lessons: [
+      { title: 'What is Artificial Intelligence?', type: 'pdf', duration: 20 },
+      { title: 'Machine Learning 101', type: 'online', duration: 45 },
+      { title: 'Neural Networks Explained Simply', type: 'online', duration: 60 },
+      { title: 'AI in Everyday Life', type: 'pdf', duration: 20 },
+      { title: 'Ethical AI & Responsible Use', type: 'online', duration: 30 },
+    ],
+  },
+  {
+    courseTitle: 'Git & GitHub Essentials — FREE for Everyone',
+    courseDescription: 'Version control is a must-have skill. This free course covers Git basics, branching, merging, pull requests, and collaborating on GitHub for any project.',
+    coursePrice: 0, discount: 0, category: 'Web Development', level: 'Beginner', thumbIdx: 22,
+    lessons: [
+      { title: 'What is Version Control?', type: 'pdf', duration: 15 },
+      { title: 'Git Basics: init, add, commit', type: 'online', duration: 45 },
+      { title: 'Branching & Merging', type: 'online', duration: 50 },
+      { title: 'GitHub: Push, Pull & PRs', type: 'online', duration: 60 },
+      { title: 'Team Collaboration Workflow', type: 'offline', duration: 45 },
+    ],
+  },
+  {
+    courseTitle: 'Cybersecurity Fundamentals — FREE Awareness Course',
+    courseDescription: 'Stay safe online. This free course teaches you the essentials of cybersecurity: passwords, phishing, social engineering, and protecting your digital life.',
+    coursePrice: 0, discount: 0, category: 'Cybersecurity', level: 'Beginner', thumbIdx: 5,
+    lessons: [
+      { title: 'The Threat Landscape in 2024', type: 'pdf', duration: 20 },
+      { title: 'Password Security & 2FA', type: 'online', duration: 40 },
+      { title: 'Phishing & Social Engineering', type: 'online', duration: 45 },
+      { title: 'Safe Browsing & Privacy Tools', type: 'pdf', duration: 25 },
+      { title: 'Protecting Your Devices', type: 'online', duration: 30 },
+    ],
+  },
+  {
+    courseTitle: 'UI Design Principles — FREE Crash Course',
+    courseDescription: 'Learn the core principles of great UI design: typography, color theory, spacing, hierarchy, and accessibility. Perfect for developers who want to design better interfaces.',
+    coursePrice: 0, discount: 0, category: 'UI/UX Design', level: 'Beginner', thumbIdx: 6,
+    lessons: [
+      { title: 'Design Principles Overview', type: 'pdf', duration: 20 },
+      { title: 'Typography & Color Theory', type: 'online', duration: 55 },
+      { title: 'Layout, Spacing & Visual Hierarchy', type: 'online', duration: 50 },
+      { title: 'Designing for Accessibility', type: 'pdf', duration: 25 },
+      { title: 'Critique: Good vs Bad UI', type: 'offline', duration: 60 },
+    ],
+  },
+  {
+    courseTitle: 'Digital Marketing Fundamentals — FREE',
+    courseDescription: 'Learn the basics of digital marketing for free: SEO, social media strategy, email marketing, and content creation. No experience needed.',
+    coursePrice: 0, discount: 0, category: 'Digital Marketing', level: 'Beginner', thumbIdx: 7,
+    lessons: [
+      { title: 'Introduction to Digital Marketing', type: 'pdf', duration: 15 },
+      { title: 'Search Engine Optimization (SEO)', type: 'online', duration: 55 },
+      { title: 'Social Media Strategy', type: 'online', duration: 50 },
+      { title: 'Email Marketing Basics', type: 'pdf', duration: 30 },
+      { title: 'Creating Your First Campaign', type: 'offline', duration: 60 },
+    ],
+  },
+  {
+    courseTitle: 'Excel & Google Sheets for Data Analysis — FREE',
+    courseDescription: 'Harness the power of spreadsheets. Free course covering formulas, pivot tables, charts, and data cleaning in both Excel and Google Sheets for non-technical professionals.',
+    coursePrice: 0, discount: 0, category: 'Data Science', level: 'Beginner', thumbIdx: 14,
+    lessons: [
+      { title: 'Spreadsheet Fundamentals', type: 'pdf', duration: 20 },
+      { title: 'Essential Formulas & Functions', type: 'online', duration: 60 },
+      { title: 'Pivot Tables Explained', type: 'online', duration: 55 },
+      { title: 'Data Visualization with Charts', type: 'pdf', duration: 35 },
+      { title: 'Real Data Analysis Project', type: 'offline', duration: 75 },
+    ],
+  },
+  {
+    courseTitle: 'Public Speaking & Presentation Skills — FREE',
+    courseDescription: 'Overcome fear of public speaking. This free course covers storytelling, slide design, body language, and how to command any room — from interviews to keynote talks.',
+    coursePrice: 0, discount: 0, category: 'Soft Skills', level: 'Beginner', thumbIdx: 20,
+    lessons: [
+      { title: 'Overcoming Stage Fright', type: 'pdf', duration: 20 },
+      { title: 'Structuring a Compelling Talk', type: 'online', duration: 50 },
+      { title: 'Slide Design That Works', type: 'online', duration: 45 },
+      { title: 'Body Language & Voice Control', type: 'pdf', duration: 25 },
+      { title: 'Live Practice Session', type: 'offline', duration: 90 },
+    ],
+  },
+  {
+    courseTitle: 'Cloud Computing Basics — FREE Introduction',
+    courseDescription: 'Demystify the cloud. This free introductory course explains what cloud computing is, how AWS/Azure/GCP work, and the career opportunities in cloud for beginners.',
+    coursePrice: 0, discount: 0, category: 'Cloud & DevOps', level: 'Beginner', thumbIdx: 4,
+    lessons: [
+      { title: 'What is Cloud Computing?', type: 'pdf', duration: 15 },
+      { title: 'AWS vs Azure vs GCP', type: 'online', duration: 45 },
+      { title: 'Core Cloud Services Explained', type: 'online', duration: 60 },
+      { title: 'Setting Up Your First Cloud Account', type: 'pdf', duration: 30 },
+      { title: 'Cloud Career Pathways', type: 'online', duration: 25 },
+    ],
+  },
+  {
+    courseTitle: 'Photography for Beginners — FREE Starter Guide',
+    courseDescription: 'Learn the fundamentals of photography completely free. Topics: exposure triangle, composition rules, lighting basics, and editing your first photos with free tools.',
+    coursePrice: 0, discount: 0, category: 'Photography', level: 'Beginner', thumbIdx: 8,
+    lessons: [
+      { title: 'Understanding Your Camera', type: 'pdf', duration: 20 },
+      { title: 'The Exposure Triangle', type: 'online', duration: 50 },
+      { title: 'Composition Techniques', type: 'online', duration: 45 },
+      { title: 'Lighting Fundamentals', type: 'pdf', duration: 30 },
+      { title: 'Editing with Free Tools', type: 'offline', duration: 60 },
+    ],
+  },
+  {
+    courseTitle: 'Freelancing 101 — Build Your Online Career (FREE)',
+    courseDescription: 'Start your freelancing journey for free. Learn how to find clients, set rates, build a portfolio, and manage projects as an independent professional in any field.',
+    coursePrice: 0, discount: 0, category: 'Business & Management', level: 'Beginner', thumbIdx: 11,
+    lessons: [
+      { title: 'Is Freelancing Right for You?', type: 'pdf', duration: 15 },
+      { title: 'Building a Portfolio That Gets Clients', type: 'online', duration: 50 },
+      { title: 'Platforms: Upwork, Fiverr & More', type: 'online', duration: 45 },
+      { title: 'Pricing Your Services', type: 'pdf', duration: 30 },
+      { title: 'Managing Clients & Projects', type: 'offline', duration: 60 },
+    ],
+  },
 ];
+
+
 
 // ============================================================
 // TUTOR DATA
@@ -823,9 +970,177 @@ export class SeedService implements OnApplicationBootstrap {
 
   async onApplicationBootstrap() {
     console.log('🌱 Checking database seed data...');
+    
+    // Seed 100 Live Classes and 100 Workshops dynamically if not already seeded
+    const testLiveCourse = await this.courseRepo.findOne({ where: { courseTitle: 'Live Class cohort #100' } });
+    if (!testLiveCourse) {
+      console.log('🌱 Seeding 100 Live Classes and 100 In-Person Workshops (Batch Optimized)...');
+      const teacherIds = ['teacher_test_123', 'teacher_test_456'];
+      const futureBase = new Date();
+      
+      const coursesToSave = [];
+      const lessonsToSave = [];
+      
+      // 1. Prepare 100 Live Classes
+      for (let i = 1; i <= 100; i++) {
+        const title = `Live Class cohort #${i}`;
+        const exists = await this.courseRepo.findOne({ where: { courseTitle: title } });
+        if (!exists) {
+          const course = this.courseRepo.create({
+            courseTitle: title,
+            courseDescription: `Master real-time interactive skills in this exclusive Live Class cohort #${i}. Features live Zoom/Google Meet sessions, peer review, and assignments.`,
+            courseThumbnail: getThumbnail(i % 25),
+            coursePrice: 49.99 + (i * 2) % 150,
+            isPublished: true,
+            discount: i % 3 === 0 ? 10 : 0,
+            educator: teacherIds[i % teacherIds.length],
+            category: i % 3 === 0 ? 'Web Development' : i % 3 === 1 ? 'Data Science' : 'Artificial Intelligence',
+            level: i % 2 === 0 ? 'Beginner' : 'Intermediate',
+            language: 'English',
+            enrolledStudents: [],
+          });
+          coursesToSave.push(course);
+        }
+      }
+      
+      if (coursesToSave.length > 0) {
+        console.log(`Saving ${coursesToSave.length} Live Class courses...`);
+        const savedCourses = await this.courseRepo.save(coursesToSave);
+        for (let i = 0; i < savedCourses.length; i++) {
+          const saved = savedCourses[i];
+          const courseNum = i + 1;
+          // Seed online lessons
+          for (let j = 1; j <= 3; j++) {
+            const date = new Date(futureBase);
+            date.setDate(date.getDate() + courseNum + j);
+            lessonsToSave.push(this.lessonRepo.create({
+              lessonId: `${saved.id}_live_lesson_${j}`,
+              lessonTitle: `Live Session ${j}: Core Principles`,
+              lessonType: 'online',
+              duration: 90,
+              sortOrder: j - 1,
+              courseId: saved.id,
+              tutors: [{ name: 'Dr. Sarah Mitchell', email: 'sarah@edemy.com' }],
+              meetLink: `https://meet.google.com/live-${saved.id}-${j}`,
+              timeSchedule: date,
+            }));
+          }
+        }
+      }
+
+      const workshopCoursesToSave = [];
+      // 2. Prepare 100 Workshops
+      for (let i = 1; i <= 100; i++) {
+        const title = `In-Person Workshop #${i}`;
+        const exists = await this.courseRepo.findOne({ where: { courseTitle: title } });
+        if (!exists) {
+          const course = this.courseRepo.create({
+            courseTitle: title,
+            courseDescription: `Hands-on in-person training session Workshop #${i}. Meet your mentors, work in teams, and build real-world experience at our local campus.`,
+            courseThumbnail: getThumbnail((i + 12) % 25),
+            coursePrice: 99.99 + (i * 3) % 200,
+            isPublished: true,
+            discount: i % 4 === 0 ? 15 : 0,
+            educator: teacherIds[i % teacherIds.length],
+            category: i % 3 === 0 ? 'Cybersecurity' : i % 3 === 1 ? 'UI/UX Design' : 'Cloud Computing',
+            level: 'Intermediate',
+            language: 'English',
+            enrolledStudents: [],
+            institutionName: 'Edemy Global Centers',
+          });
+          workshopCoursesToSave.push(course);
+        }
+      }
+
+      if (workshopCoursesToSave.length > 0) {
+        console.log(`Saving ${workshopCoursesToSave.length} Workshop courses...`);
+        const savedWorkshops = await this.courseRepo.save(workshopCoursesToSave);
+        for (let i = 0; i < savedWorkshops.length; i++) {
+          const saved = savedWorkshops[i];
+          const courseNum = i + 1;
+          // Seed offline lessons
+          for (let j = 1; j <= 2; j++) {
+            const date = new Date(futureBase);
+            date.setDate(date.getDate() + courseNum + j);
+            lessonsToSave.push(this.lessonRepo.create({
+              lessonId: `${saved.id}_workshop_lesson_${j}`,
+              lessonTitle: `Hands-on Lab ${j}: Physical Training`,
+              lessonType: 'offline',
+              duration: 180,
+              sortOrder: j - 1,
+              courseId: saved.id,
+              tutors: [{ name: 'Marcus Johnson', email: 'marcus@edemy.com' }],
+              locationDetails: `Edemy Lab Room ${200 + j * 5}, Dhaka Center`,
+              timeSchedule: date,
+            }));
+          }
+        }
+      }
+
+      if (lessonsToSave.length > 0) {
+        console.log(`Saving ${lessonsToSave.length} lessons in chunks...`);
+        const chunkSize = 100;
+        for (let k = 0; k < lessonsToSave.length; k += chunkSize) {
+          const chunk = lessonsToSave.slice(k, k + chunkSize);
+          await this.lessonRepo.save(chunk);
+          console.log(`Saved lesson chunk ${Math.floor(k / chunkSize) + 1}/${Math.ceil(lessonsToSave.length / chunkSize)}`);
+        }
+      }
+      console.log('✅ Seeding of 100 live classes and 100 workshops completed.');
+    }
+
     const courseCount = await this.courseRepo.count();
     if (courseCount >= 10) {
-      console.log(`✅ Database already seeded with ${courseCount} courses. Enforcing related thumbnails...`);
+      console.log(`✅ Database already seeded with ${courseCount} courses. Checking for free courses...`);
+      // Seed free courses if they don't exist yet
+      const freeCourses = COURSES_DATA.filter(c => c.coursePrice === 0);
+      const teacherIds = ['teacher_test_123', 'teacher_test_456'];
+      const futureBase = new Date();
+      for (let i = 0; i < freeCourses.length; i++) {
+        const data = freeCourses[i];
+        const exists = await this.courseRepo.findOne({ where: { courseTitle: data.courseTitle } });
+        if (!exists) {
+          console.log(`➕ Adding missing free course: ${data.courseTitle}`);
+          const course = this.courseRepo.create({
+            courseTitle: data.courseTitle,
+            courseDescription: data.courseDescription,
+            courseThumbnail: getThumbnail(data.thumbIdx),
+            coursePrice: data.coursePrice,
+            isPublished: true,
+            discount: data.discount,
+            educator: teacherIds[i % teacherIds.length],
+            category: data.category,
+            level: data.level,
+            language: 'English',
+            enrolledStudents: [],
+          });
+          const savedCourse = await this.courseRepo.save(course);
+          for (let j = 0; j < data.lessons.length; j++) {
+            const l = data.lessons[j];
+            const futureDate = new Date(futureBase);
+            futureDate.setDate(futureDate.getDate() + (i * 3) + j + 1);
+            futureDate.setHours(14 + (j % 4), 0, 0, 0);
+            const tutor = TUTORS[j % TUTORS.length];
+            const lesson = this.lessonRepo.create({
+              lessonId: `${savedCourse.id}_lesson_${j + 1}`,
+              lessonTitle: l.title,
+              lessonType: l.type,
+              duration: l.duration,
+              sortOrder: j,
+              courseId: savedCourse.id,
+              tutors: [{ name: tutor.name, email: tutor.email, imageUrl: tutor.imageUrl }],
+              pdfUrl: l.type === 'pdf' ? 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' : null,
+              webLink: l.type === 'link' ? 'https://developer.mozilla.org/en-US/' : null,
+              meetLink: l.type === 'online' ? `https://meet.google.com/edm-free-${savedCourse.id}-${j}` : null,
+              locationDetails: l.type === 'offline' ? `Edemy Campus, Room ${100 + (j * 10)}` : null,
+              timeSchedule: (l.type === 'online' || l.type === 'offline') ? futureDate : null,
+            });
+            await this.lessonRepo.save(lesson);
+          }
+          await this.ratingRepo.save(this.ratingRepo.create({ courseId: savedCourse.id, userId: 'student_test_123', rating: 5, review: 'Amazing free course!' }));
+        }
+      }
+      // Enforce thumbnails
       const CATEGORY_IMAGES: Record<string, string> = {
         'Web Development': 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=450&fit=crop&auto=format',
         'Data Science': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=450&fit=crop&auto=format',
@@ -838,8 +1153,8 @@ export class SeedService implements OnApplicationBootstrap {
         'Finance': 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=800&h=450&fit=crop&auto=format',
         'Business': 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=450&fit=crop&auto=format',
       };
-      const courses = await this.courseRepo.find();
-      for (const c of courses) {
+      const allCourses = await this.courseRepo.find();
+      for (const c of allCourses) {
         const relatedImage = CATEGORY_IMAGES[c.category] || CATEGORY_IMAGES['Web Development'];
         if (c.courseThumbnail !== relatedImage) {
           c.courseThumbnail = relatedImage;

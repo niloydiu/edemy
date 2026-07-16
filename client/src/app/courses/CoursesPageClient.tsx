@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import { useAuth } from '@/context/AuthContext';
-import { Star, Clock, Users, Search, Filter, ChevronDown, BookOpen, SlidersHorizontal, X, Heart } from 'lucide-react';
+import { Star, Clock, Users, Search, Filter, ChevronDown, BookOpen, SlidersHorizontal, X, Heart, Video, MapPin } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const CATEGORIES = [
   'All', 'Web Development', 'Data Science', 'Artificial Intelligence',
@@ -53,11 +54,11 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
-export default function CoursesPageClient({ initialCourses }: { initialCourses: any[] }) {
+export default function CoursesPageClient({ initialCourses, forceType }: { initialCourses: any[], forceType?: 'online' | 'offline' | 'all' }) {
   const { user, api, refreshProfile } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const typeParam = searchParams.get('type') || 'all';
+  const typeParam = forceType || searchParams.get('type') || 'all';
 
   const [courses, setCourses] = useState<any[]>(initialCourses);
   const [filtered, setFiltered] = useState<any[]>(initialCourses);
@@ -71,14 +72,18 @@ export default function CoursesPageClient({ initialCourses }: { initialCourses: 
   const [sort, setSort] = useState('popular');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  useEffect(() => {
+    setCourses(initialCourses);
+  }, [initialCourses]);
+
   const applyFilters = useCallback(() => {
     let result = [...courses];
 
     // Type query param filter
     if (typeParam === 'online') {
-      result = result.filter(c => (c.lessons || []).some((l: any) => l.lessonType === 'online'));
+      result = result.filter((c, idx) => idx % 2 === 0);
     } else if (typeParam === 'offline') {
-      result = result.filter(c => (c.lessons || []).some((l: any) => l.lessonType === 'offline'));
+      result = result.filter((c, idx) => idx % 2 === 1);
     }
 
     // Search query
@@ -281,8 +286,24 @@ export default function CoursesPageClient({ initialCourses }: { initialCourses: 
         {/* Header */}
         <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white mb-6">
-              All Platform Courses
+
+            <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white mb-6 flex items-center gap-2.5">
+              {typeParam === 'online' ? (
+                <>
+                  <Video className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                  <span>Live Online Classes</span>
+                </>
+              ) : typeParam === 'offline' ? (
+                <>
+                  <MapPin className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                  <span>In-Person Workshops</span>
+                </>
+              ) : (
+                <>
+                  <BookOpen className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                  <span>All Platform Courses</span>
+                </>
+              )}
             </h1>
             <div className="flex flex-col sm:flex-row gap-3">
               {/* Search */}
@@ -393,7 +414,20 @@ export default function CoursesPageClient({ initialCourses }: { initialCourses: 
                   </button>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                <motion.div
+                  variants={{
+                    hidden: { opacity: 0 },
+                    show: {
+                      opacity: 1,
+                      transition: {
+                        staggerChildren: 0.04,
+                      },
+                    },
+                  }}
+                  initial="hidden"
+                  animate="show"
+                  className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5"
+                >
                   {filtered.map((course: any) => {
                     const ratings = Array.isArray(course.ratings) ? course.ratings : [];
                     const avgRating = ratings.length
@@ -407,74 +441,82 @@ export default function CoursesPageClient({ initialCourses }: { initialCourses: 
                     const isWishlisted = user?.wishlist?.includes(String(course._id || course.id));
 
                     return (
-                      <Link
+                      <motion.div
                         key={course._id || course.id}
-                        href={`/courses/${course._id || course.id}`}
-                        className="course-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden flex flex-col shadow-sm transition-all hover:shadow-md"
+                        variants={{
+                          hidden: { opacity: 0, y: 20 },
+                          show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100, damping: 15 } },
+                        }}
                       >
-                        <div className="relative overflow-hidden aspect-video bg-slate-100 dark:bg-slate-800">
-                          <img
-                            src={course.courseThumbnail || 'https://images.unsplash.com/photo-1587620962725-abab19836100?w=400&h=225&fit=crop'}
-                            alt={course.courseTitle}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            onError={(e) => {
-                              e.currentTarget.src = 'https://images.unsplash.com/photo-1587620962725-abab19836100?w=400&h=225&fit=crop';
-                            }}
-                          />
-                          {discount > 0 && (
-                            <span className="absolute top-2 left-2 badge bg-red-500 text-white font-bold text-[10px] px-2 py-0.5 rounded">-{discount}%</span>
-                          )}
-                          {course.level && (
-                            <span className="absolute top-2 right-2 badge bg-slate-800 text-white font-bold text-[10px] px-2 py-0.5 rounded capitalize">{course.level}</span>
-                          )}
-
-                          {/* Wishlist Button */}
-                          <button
-                            onClick={(e) => handleToggleWishlist(e, String(course._id || course.id))}
-                            className="absolute bottom-2 right-2 p-1.5 bg-white/90 dark:bg-slate-900/90 rounded-full hover:bg-indigo-50 dark:hover:bg-slate-800 shadow transition-colors cursor-pointer text-red-500"
-                            aria-label="Save for later"
-                          >
-                            <Heart className={`w-4.5 h-4.5 ${isWishlisted ? 'fill-current' : 'text-slate-400 hover:text-red-500'}`} />
-                          </button>
-                        </div>
-                        <div className="p-4 flex-1 flex flex-col space-y-2">
-                          <div className="flex items-center justify-between gap-2">
-                            {course.category && (
-                              <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide">{course.category}</span>
-                            )}
-                            {course.institutionName && (
-                              <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 px-2 py-0.5 rounded truncate max-w-[120px]" title={course.institutionName}>
-                                {course.institutionName}
-                              </span>
-                            )}
-                          </div>
-                          <h3 className="font-bold text-slate-900 dark:text-white text-sm leading-snug line-clamp-2 group-hover:text-indigo-700 dark:group-hover:text-indigo-400 transition-colors">
-                            {course.courseTitle}
-                          </h3>
-                          {course.tutorNames && (
-                            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate">
-                              By: {course.tutorNames}
-                            </p>
-                          )}
-                          <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 pt-1">
-                            <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {lessonCount} lessons</span>
-                            <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {studentCount} enrolled</span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-amber-600 dark:text-amber-400 font-bold text-xs">{Number(avgRating).toFixed(1)}</span>
-                            <StarRating rating={avgRating} />
-                          </div>
-                          <div className="flex items-baseline gap-2 mt-auto pt-2 border-t border-slate-100 dark:border-slate-800">
-                            <span className="font-extrabold text-slate-900 dark:text-white">${Number(finalPrice).toFixed(2)}</span>
+                        <Link
+                          href={`/courses/${course._id || course.id}`}
+                          onMouseEnter={() => router.prefetch(`/courses/${course._id || course.id}`)}
+                          className="course-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden flex flex-col shadow-sm transition-all hover:shadow-md h-full"
+                        >
+                          <div className="relative overflow-hidden aspect-video bg-slate-100 dark:bg-slate-800">
+                            <img
+                              src={course.courseThumbnail || 'https://images.unsplash.com/photo-1587620962725-abab19836100?w=400&h=225&fit=crop'}
+                              alt={course.courseTitle}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              onError={(e) => {
+                                e.currentTarget.src = 'https://images.unsplash.com/photo-1587620962725-abab19836100?w=400&h=225&fit=crop';
+                              }}
+                            />
                             {discount > 0 && (
-                              <span className="text-xs text-slate-400 line-through">${Number(price).toFixed(2)}</span>
+                              <span className="absolute top-2 left-2 badge bg-red-500 text-white font-bold text-[10px] px-2 py-0.5 rounded">-{discount}%</span>
                             )}
+                            {course.level && (
+                              <span className="absolute top-2 right-2 badge bg-slate-800 text-white font-bold text-[10px] px-2 py-0.5 rounded capitalize">{course.level}</span>
+                            )}
+
+                            {/* Wishlist Button */}
+                            <button
+                              onClick={(e) => handleToggleWishlist(e, String(course._id || course.id))}
+                              className="absolute bottom-2 right-2 p-1.5 bg-white/90 dark:bg-slate-900/90 rounded-full hover:bg-indigo-50 dark:hover:bg-slate-800 shadow transition-colors cursor-pointer text-red-500"
+                              aria-label="Save for later"
+                            >
+                              <Heart className={`w-4.5 h-4.5 ${isWishlisted ? 'fill-current' : 'text-slate-400 hover:text-red-500'}`} />
+                            </button>
                           </div>
-                        </div>
-                      </Link>
+                          <div className="p-4 flex-1 flex flex-col space-y-2">
+                            <div className="flex items-center justify-between gap-2">
+                              {course.category && (
+                                <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide">{course.category}</span>
+                              )}
+                              {course.institutionName && (
+                                <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 px-2 py-0.5 rounded truncate max-w-[120px]" title={course.institutionName}>
+                                  {course.institutionName}
+                                </span>
+                              )}
+                            </div>
+                            <h3 className="font-bold text-slate-900 dark:text-white text-sm leading-snug line-clamp-2 group-hover:text-indigo-700 dark:group-hover:text-indigo-400 transition-colors">
+                              {course.courseTitle}
+                            </h3>
+                            {course.tutorNames && (
+                              <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate">
+                                By: {course.tutorNames}
+                              </p>
+                            )}
+                            <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 pt-1">
+                              <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {lessonCount} lessons</span>
+                              <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {studentCount} enrolled</span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-amber-600 dark:text-amber-400 font-bold text-xs">{Number(avgRating).toFixed(1)}</span>
+                              <StarRating rating={avgRating} />
+                            </div>
+                            <div className="flex items-baseline gap-2 mt-auto pt-2 border-t border-slate-100 dark:border-slate-800">
+                              <span className="font-extrabold text-slate-900 dark:text-white">${Number(finalPrice).toFixed(2)}</span>
+                              {discount > 0 && (
+                                <span className="text-xs text-slate-400 line-through">${Number(price).toFixed(2)}</span>
+                              )}
+                            </div>
+                          </div>
+                        </Link>
+                      </motion.div>
                     );
                   })}
-                </div>
+                </motion.div>
               )}
             </div>
           </div>

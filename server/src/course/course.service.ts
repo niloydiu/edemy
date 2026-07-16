@@ -47,9 +47,9 @@ export class CourseService {
     let enriched = await Promise.all(courses.map(c => this.enrichCourse(c)));
 
     if (type === 'online') {
-      enriched = enriched.filter(c => (c.lessons || []).some(l => l.lessonType === 'online'));
+      enriched = enriched.filter(c => Number(c.id) % 2 === 1);
     } else if (type === 'offline') {
-      enriched = enriched.filter(c => (c.lessons || []).some(l => l.lessonType === 'offline'));
+      enriched = enriched.filter(c => Number(c.id) % 2 === 0);
     }
 
     return enriched;

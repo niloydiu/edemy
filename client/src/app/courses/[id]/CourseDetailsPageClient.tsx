@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import { useAuth } from '@/context/AuthContext';
 import { motion } from 'framer-motion';
-import { BookOpen, Calendar, MapPin, Video, FileText, Star, CreditCard, ChevronRight, Lock, CheckSquare, Square, Play, Unlock } from 'lucide-react';
+import { BookOpen, Calendar, MapPin, Video, FileText, Star, CreditCard, ChevronRight, Lock, CheckSquare, Square, Play, Unlock, ExternalLink } from 'lucide-react';
 
 function getYouTubeId(url: string) {
   if (!url) return null;
@@ -131,12 +131,114 @@ export default function CourseDetailsPageClient({ initialCourse }: { initialCour
                     />
                   )
                 ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 p-8 text-center space-y-4">
-                    <Play className="w-16 h-16 text-indigo-500 opacity-60 animate-pulse" />
-                    <div>
-                      <h4 className="font-bold text-white text-base">{selectedLesson.lessonTitle}</h4>
-                      <p className="text-xs text-slate-500 uppercase font-semibold mt-1">This lesson does not contain a video file.</p>
-                    </div>
+                  <div className="w-full h-full">
+                    {selectedLesson.lessonType === 'online' ? (
+                      <div className="w-full h-full flex flex-col items-center justify-center bg-slate-950 p-6 md:p-10 text-center space-y-6">
+                        <div className="relative flex items-center justify-center w-16 h-16 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/25">
+                          <Video className="w-8 h-8" />
+                          <span className="absolute top-0 right-0 flex h-3.5 w-3.5">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-indigo-500"></span>
+                          </span>
+                        </div>
+                        <div className="max-w-md space-y-2">
+                          <h4 className="font-extrabold text-white text-lg tracking-tight">{selectedLesson.lessonTitle}</h4>
+                          <p className="text-xs text-slate-400 leading-relaxed">
+                            This is a live online class session hosted via Google Meet. Join the real-time session using the link below.
+                          </p>
+                          {selectedLesson.timeSchedule && (
+                            <p className="text-[11px] text-indigo-400 font-bold bg-indigo-950/40 border border-indigo-900/50 py-1.5 px-3 rounded-lg inline-flex items-center gap-1.5 mt-2">
+                              <Calendar className="w-3.5 h-3.5" />
+                              Scheduled: {new Date(selectedLesson.timeSchedule).toLocaleString()}
+                            </p>
+                          )}
+                        </div>
+                        <a
+                          href={selectedLesson.meetLink || '#'}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider rounded-lg shadow-lg flex items-center gap-2 transition-all hover:scale-[1.02] cursor-pointer ${
+                            !selectedLesson.meetLink ? 'opacity-50 pointer-events-none' : ''
+                          }`}
+                        >
+                          <ExternalLink className="w-4 h-4" /> Join Live Google Meet Class
+                        </a>
+                      </div>
+                    ) : selectedLesson.lessonType === 'pdf' ? (
+                      <div className="w-full h-full flex flex-col items-center justify-center bg-slate-950 p-6 md:p-10 text-center space-y-6">
+                        <div className="flex items-center justify-center w-16 h-16 rounded-full bg-red-500/10 text-red-400 border border-red-500/25">
+                          <FileText className="w-8 h-8" />
+                        </div>
+                        <div className="max-w-md space-y-2">
+                          <h4 className="font-extrabold text-white text-lg tracking-tight">{selectedLesson.lessonTitle}</h4>
+                          <p className="text-xs text-slate-400 leading-relaxed">
+                            This lesson contains reference study material in PDF format. Open or download the document below.
+                          </p>
+                        </div>
+                        <a
+                          href={selectedLesson.pdfUrl || '#'}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider rounded-lg shadow-lg flex items-center gap-2 transition-all hover:scale-[1.02] cursor-pointer ${
+                            !selectedLesson.pdfUrl ? 'opacity-50 pointer-events-none' : ''
+                          }`}
+                        >
+                          <ExternalLink className="w-4 h-4" /> View / Download PDF Resource
+                        </a>
+                      </div>
+                    ) : selectedLesson.lessonType === 'link' ? (
+                      <div className="w-full h-full flex flex-col items-center justify-center bg-slate-950 p-6 md:p-10 text-center space-y-6">
+                        <div className="flex items-center justify-center w-16 h-16 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/25">
+                          <BookOpen className="w-8 h-8" />
+                        </div>
+                        <div className="max-w-md space-y-2">
+                          <h4 className="font-extrabold text-white text-lg tracking-tight">{selectedLesson.lessonTitle}</h4>
+                          <p className="text-xs text-slate-400 leading-relaxed">
+                            This lesson provides reference reading links and web resources.
+                          </p>
+                        </div>
+                        <a
+                          href={selectedLesson.webLink || '#'}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`px-6 py-2.5 bg-sky-600 hover:bg-sky-750 text-white font-bold text-xs uppercase tracking-wider rounded-lg shadow-lg flex items-center gap-2 transition-all hover:scale-[1.02] cursor-pointer ${
+                            !selectedLesson.webLink ? 'opacity-50 pointer-events-none' : ''
+                          }`}
+                        >
+                          <ExternalLink className="w-4 h-4" /> Open Resource Link
+                        </a>
+                      </div>
+                    ) : selectedLesson.lessonType === 'offline' ? (
+                      <div className="w-full h-full flex flex-col items-center justify-center bg-slate-950 p-6 md:p-10 text-center space-y-6">
+                        <div className="flex items-center justify-center w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+                          <MapPin className="w-8 h-8" />
+                        </div>
+                        <div className="max-w-md space-y-2">
+                          <h4 className="font-extrabold text-white text-lg tracking-tight">{selectedLesson.lessonTitle}</h4>
+                          <p className="text-xs text-slate-400 leading-relaxed">
+                            This is an in-person, offline workshop session.
+                          </p>
+                          {selectedLesson.locationDetails && (
+                            <p className="text-xs text-white font-semibold bg-emerald-950/40 border border-emerald-900/50 py-1.5 px-3 rounded-lg inline-block mt-2">
+                              Venue: {selectedLesson.locationDetails}
+                            </p>
+                          )}
+                          {selectedLesson.timeSchedule && (
+                            <p className="block text-[11px] text-slate-450 mt-1">
+                              Scheduled: {new Date(selectedLesson.timeSchedule).toLocaleString()}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 p-8 text-center space-y-4">
+                        <Play className="w-16 h-16 text-indigo-500 opacity-60 animate-pulse" />
+                        <div>
+                          <h4 className="font-bold text-white text-base">{selectedLesson.lessonTitle}</h4>
+                          <p className="text-xs text-slate-500 uppercase font-semibold mt-1">This lesson does not contain a video file.</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -210,7 +312,20 @@ export default function CourseDetailsPageClient({ initialCourse }: { initialCour
               Course Content
             </h2>
 
-            <div className="space-y-4">
+            <motion.div
+              variants={{
+                hidden: { opacity: 0 },
+                show: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.03,
+                  },
+                },
+              }}
+              initial="hidden"
+              animate="show"
+              className="space-y-4"
+            >
               {course.lessons && course.lessons.length > 0 ? (
                 course.lessons.map((lesson: any, index: number) => {
                   const isCompleted = progress?.completedLessons?.includes(lesson.lessonId);
@@ -219,8 +334,12 @@ export default function CourseDetailsPageClient({ initialCourse }: { initialCour
                   const canAccess = isEnrolled || isLessonPreview;
 
                   return (
-                    <div
+                    <motion.div
                       key={lesson.lessonId}
+                      variants={{
+                        hidden: { opacity: 0, y: 15 },
+                        show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 120, damping: 18 } },
+                      }}
                       onClick={() => canAccess && setSelectedLesson(lesson)}
                       className={`p-5 rounded-lg flex items-start gap-4 border transition-all shadow-sm ${
                         canAccess ? 'cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/40' : 'opacity-75'
@@ -295,13 +414,13 @@ export default function CourseDetailsPageClient({ initialCourse }: { initialCour
                           {isCompleted ? <CheckSquare className="w-5 h-5" /> : <Square className="w-5 h-5" />}
                         </button>
                       )}
-                    </div>
+                    </motion.div>
                   );
                 })
               ) : (
                 <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">No lessons uploaded yet.</p>
               )}
-            </div>
+            </motion.div>
           </div>
         </div>
 

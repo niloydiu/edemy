@@ -393,3 +393,39 @@
     margin: 1.5rem 0;
   }
 }
+
+/* === THEME TRANSITION ANIMATIONS === */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.4s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Fallback transitions for browsers not supporting View Transition API */
+@media (prefers-reduced-motion: no-preference) {
+  .theme-transitioning *,
+  .theme-transitioning {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, fill 0.3s ease, stroke 0.3s ease !important;
+  }
+}
+
+/* === BUTTON & CARD CLICK TACTILE ANIMATION === */
+button:active,
+a:active,
+.btn-primary:active,
+.btn-secondary:active,
+.course-card:active {
+  transform: scale(0.97) !important;
+  transition: transform 0.08s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+/* Base transitions to make scale-down smooth */
+button,
+a,
+.btn-primary,
+.btn-secondary,
+.course-card {
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+
