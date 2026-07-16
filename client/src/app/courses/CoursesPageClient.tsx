@@ -81,9 +81,9 @@ export default function CoursesPageClient({ initialCourses, forceType }: { initi
 
     // Type query param filter
     if (typeParam === 'online') {
-      result = result.filter((c, idx) => idx % 2 === 0);
+      result = result.filter(c => c.lessons?.some((l: any) => l.lessonType === 'online'));
     } else if (typeParam === 'offline') {
-      result = result.filter((c, idx) => idx % 2 === 1);
+      result = result.filter(c => c.lessons?.some((l: any) => l.lessonType === 'offline'));
     }
 
     // Search query

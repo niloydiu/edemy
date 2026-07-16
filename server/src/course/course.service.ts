@@ -83,9 +83,9 @@ export class CourseService {
     }));
 
     if (type === 'online') {
-      enriched = enriched.filter(c => Number(c.id) % 2 === 1);
+      enriched = enriched.filter(c => c.lessons.some((l: any) => l.lessonType === 'online'));
     } else if (type === 'offline') {
-      enriched = enriched.filter(c => Number(c.id) % 2 === 0);
+      enriched = enriched.filter(c => c.lessons.some((l: any) => l.lessonType === 'offline'));
     }
 
     return enriched;
