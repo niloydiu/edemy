@@ -1,11 +1,15 @@
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import { useAuth } from '@/context/AuthContext';
-import { Star, Clock, Users, Search, Filter, ChevronDown, BookOpen, SlidersHorizontal, X, Heart, Video, MapPin } from 'lucide-react';
+import {
+  Star, Clock, Users, Search, Filter, ChevronDown, BookOpen,
+  SlidersHorizontal, X, Heart, Video, MapPin, AlertCircle,
+  ChevronLeft, ChevronRight,
+} from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const CATEGORIES = [
@@ -16,9 +20,7 @@ const CATEGORIES = [
   'Music & Audio', '3D Modeling & Animation', 'Health & Fitness',
   'Blockchain & Web3', 'E-Commerce', 'Database Design', 'Soft Skills',
 ];
-
 const LEVELS = ['All Levels', 'Beginner', 'Intermediate', 'Advanced'];
-
 const PRICE_RANGES = [
   { label: 'All Prices', min: 0, max: 999 },
   { label: 'Free', min: 0, max: 0 },
@@ -26,20 +28,19 @@ const PRICE_RANGES = [
   { label: '$50 – $100', min: 50, max: 100 },
   { label: '$100+', min: 100, max: 999 },
 ];
-
 const RATING_OPTIONS = [
   { label: 'All Ratings', min: 0 },
   { label: '4.5 & Up', min: 4.5 },
   { label: '4.0 & Up', min: 4.0 },
   { label: '3.5 & Up', min: 3.5 },
 ];
-
 const DURATION_OPTIONS = [
   { label: 'All Durations', min: 0, max: 99999 },
   { label: 'Short (< 2 hrs)', min: 0, max: 120 },
   { label: 'Medium (2-10 hrs)', min: 120, max: 600 },
   { label: 'Long (10+ hrs)', min: 600, max: 99999 },
 ];
+const PAGE_SIZE_OPTIONS = [12, 24, 48];
 
 function StarRating({ rating }: { rating: number }) {
   const safeRating = isNaN(Number(rating)) ? 5 : Math.round(Number(rating));
@@ -54,15 +55,96 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
-export default function CoursesPageClient({ initialCourses, forceType }: { initialCourses: any[], forceType?: 'online' | 'offline' | 'all' }) {
+// Reusable pagination controls component
+function Pagination({
+  page, totalPages, pageSize, pageSizeOptions, onPageChange, onPageSizeChange,
+}: {
+  page: number;
+  totalPages: number;
+  pageSize: number;
+  pageSizeOptions: number[];
+  onPageChange: (p: number) => void;
+  onPageSizeChange: (n: number) => void;
+}) {
+  if (totalPages <= 1 && pageSizeOptions.length <= 1) return null;
+
+  const pageNumbers: (number | '…')[] = [];
+  if (totalPages <= 7) {
+    for (let i = 1; i <= totalPages; i++) pageNumbers.push(i);
+  } else {
+    pageNumbers.push(1);
+    if (page > 4) pageNumbers.push('…');
+    for (let i = Math.max(2, page - 1); i <= Math.min(totalPages - 1, page + 1); i++) {
+      pageNumbers.push(i);
+    }
+    if (page < totalPages - 3) pageNumbers.push('…');
+    pageNumbers.push(totalPages);
+  }
+
+  return (
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8">
+      <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+        <span>Per page:</span>
+        <select
+          value={pageSize}
+          onChange={e => { onPageSizeChange(Number(e.target.value)); onPageChange(1); }}
+          className="input py-1 px-2 text-xs w-auto"
+        >
+          {pageSizeOptions.map(n => (
+            <option key={n} value={n}>{n}</option>
+          ))}
+        </select>
+      </div>
+      <div className="flex items-center gap-1">
+        <button
+          className="pagination-btn"
+          disabled={page === 1}
+          onClick={() => onPageChange(page - 1)}
+          aria-label="Previous page"
+        >
+          <ChevronLeft className="w-4 h-4" />
+        </button>
+        {pageNumbers.map((p, i) =>
+          p === '…' ? (
+            <span key={`ellipsis-${i}`} className="px-1 text-slate-400 text-sm select-none">…</span>
+          ) : (
+            <button
+              key={p}
+              className={`pagination-btn ${page === p ? 'active' : ''}`}
+              onClick={() => onPageChange(p as number)}
+            >
+              {p}
+            </button>
+          )
+        )}
+        <button
+          className="pagination-btn"
+          disabled={page === totalPages}
+          onClick={() => onPageChange(page + 1)}
+          aria-label="Next page"
+        >
+          <ChevronRight className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default function CoursesPageClient({
+  initialCourses,
+  forceType,
+}: {
+  initialCourses: any[];
+  forceType?: 'online' | 'offline' | 'all';
+}) {
   const { user, api, refreshProfile } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const typeParam = forceType || searchParams.get('type') || 'all';
 
   const [courses, setCourses] = useState<any[]>(initialCourses);
-  const [filtered, setFiltered] = useState<any[]>(initialCourses);
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [level, setLevel] = useState('All Levels');
@@ -72,21 +154,26 @@ export default function CoursesPageClient({ initialCourses, forceType }: { initi
   const [sort, setSort] = useState('popular');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // Pagination state
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
+
   useEffect(() => {
     setCourses(initialCourses);
   }, [initialCourses]);
 
-  const applyFilters = useCallback(() => {
+  // Reset page on any filter change
+  useEffect(() => { setPage(1); }, [search, category, level, priceRange, ratingFilter, durationFilter, sort]);
+
+  const filtered = useMemo(() => {
     let result = [...courses];
 
-    // Type query param filter
     if (typeParam === 'online') {
       result = result.filter(c => c.lessons?.some((l: any) => l.lessonType === 'online'));
     } else if (typeParam === 'offline') {
       result = result.filter(c => c.lessons?.some((l: any) => l.lessonType === 'offline'));
     }
 
-    // Search query
     if (search) {
       const q = search.toLowerCase();
       result = result.filter(c =>
@@ -97,17 +184,9 @@ export default function CoursesPageClient({ initialCourses, forceType }: { initi
       );
     }
 
-    // Category filter
-    if (category !== 'All') {
-      result = result.filter(c => c.category === category);
-    }
+    if (category !== 'All') result = result.filter(c => c.category === category);
+    if (level !== 'All Levels') result = result.filter(c => c.level === level);
 
-    // Level filter
-    if (level !== 'All Levels') {
-      result = result.filter(c => c.level === level);
-    }
-
-    // Price filter
     result = result.filter(c => {
       const price = Number(c.coursePrice) || 0;
       const discount = Number(c.discount) || 0;
@@ -115,25 +194,22 @@ export default function CoursesPageClient({ initialCourses, forceType }: { initi
       return p >= priceRange.min && p <= priceRange.max;
     });
 
-    // Rating filter
     result = result.filter(c => {
       const ratings = Array.isArray(c.ratings) ? c.ratings : [];
       const avg = ratings.length
-        ? (ratings.reduce((acc: number, r: any) => acc + (Number(r.rating) || 0), 0) / ratings.length)
+        ? ratings.reduce((acc: number, r: any) => acc + (Number(r.rating) || 0), 0) / ratings.length
         : 4.8;
       return avg >= ratingFilter.min;
     });
 
-    // Duration filter
     result = result.filter(c => {
       const lessons = Array.isArray(c.lessons) ? c.lessons : [];
       const totalMinutes = lessons.reduce((acc: number, l: any) => acc + (Number(l.duration) || 0), 0);
       return totalMinutes >= durationFilter.min && totalMinutes <= durationFilter.max;
     });
 
-    // Sorting
     if (sort === 'popular') {
-      result.sort((a, b) => ((b.enrolledStudents?.length || 0) - (a.enrolledStudents?.length || 0)));
+      result.sort((a, b) => (b.enrolledStudents?.length || 0) - (a.enrolledStudents?.length || 0));
     } else if (sort === 'newest') {
       result.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
     } else if (sort === 'price-low') {
@@ -148,20 +224,27 @@ export default function CoursesPageClient({ initialCourses, forceType }: { initi
       });
     }
 
-    setFiltered(result);
+    return result;
   }, [courses, search, category, level, priceRange, ratingFilter, durationFilter, sort, typeParam]);
 
-  useEffect(() => {
-    applyFilters();
-  }, [applyFilters]);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const safePage = Math.min(page, totalPages);
+  const paginated = filtered.slice((safePage - 1) * pageSize, safePage * pageSize);
+
+  const clearFilters = useCallback(() => {
+    setCategory('All');
+    setLevel('All Levels');
+    setPriceRange(PRICE_RANGES[0]);
+    setRatingFilter(RATING_OPTIONS[0]);
+    setDurationFilter(DURATION_OPTIONS[0]);
+    setSearch('');
+    setPage(1);
+  }, []);
 
   const handleToggleWishlist = async (e: React.MouseEvent, courseId: string) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!user) {
-      router.push('/auth/login');
-      return;
-    }
+    if (!user) { router.push('/auth/login'); return; }
     try {
       await api.post('/users/wishlist', { courseId });
       await refreshProfile();
@@ -181,7 +264,9 @@ export default function CoursesPageClient({ initialCourses, forceType }: { initi
               key={c}
               onClick={() => setCategory(c)}
               className={`w-full text-left px-3 py-1.5 rounded-lg text-sm transition-colors cursor-pointer ${
-                category === c ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/40'
+                category === c
+                  ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 font-semibold'
+                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/40'
               }`}
             >
               {c}
@@ -199,7 +284,9 @@ export default function CoursesPageClient({ initialCourses, forceType }: { initi
               key={l}
               onClick={() => setLevel(l)}
               className={`w-full text-left px-3 py-1.5 rounded-lg text-sm transition-colors cursor-pointer ${
-                level === l ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/40'
+                level === l
+                  ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 font-semibold'
+                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/40'
               }`}
             >
               {l}
@@ -217,7 +304,9 @@ export default function CoursesPageClient({ initialCourses, forceType }: { initi
               key={p.label}
               onClick={() => setPriceRange(p)}
               className={`w-full text-left px-3 py-1.5 rounded-lg text-sm transition-colors cursor-pointer ${
-                priceRange.label === p.label ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/40'
+                priceRange.label === p.label
+                  ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 font-semibold'
+                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/40'
               }`}
             >
               {p.label}
@@ -235,7 +324,9 @@ export default function CoursesPageClient({ initialCourses, forceType }: { initi
               key={r.label}
               onClick={() => setRatingFilter(r)}
               className={`w-full text-left px-3 py-1.5 rounded-lg text-sm transition-colors cursor-pointer ${
-                ratingFilter.label === r.label ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/40'
+                ratingFilter.label === r.label
+                  ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 font-semibold'
+                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/40'
               }`}
             >
               {r.label}
@@ -253,7 +344,9 @@ export default function CoursesPageClient({ initialCourses, forceType }: { initi
               key={d.label}
               onClick={() => setDurationFilter(d)}
               className={`w-full text-left px-3 py-1.5 rounded-lg text-sm transition-colors cursor-pointer ${
-                durationFilter.label === d.label ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/40'
+                durationFilter.label === d.label
+                  ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 font-semibold'
+                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/40'
               }`}
             >
               {d.label}
@@ -262,22 +355,19 @@ export default function CoursesPageClient({ initialCourses, forceType }: { initi
         </div>
       </div>
 
-      {/* Reset */}
       <button
-        onClick={() => {
-          setCategory('All');
-          setLevel('All Levels');
-          setPriceRange(PRICE_RANGES[0]);
-          setRatingFilter(RATING_OPTIONS[0]);
-          setDurationFilter(DURATION_OPTIONS[0]);
-          setSearch('');
-        }}
+        onClick={clearFilters}
         className="w-full px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
       >
         Clear Filters
       </button>
     </div>
   );
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 24 },
+    show: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 90, damping: 18 } },
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors">
@@ -286,27 +376,22 @@ export default function CoursesPageClient({ initialCourses, forceType }: { initi
         {/* Header */}
         <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-            <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white mb-6 flex items-center gap-2.5">
+            <motion.h1
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="text-2xl font-extrabold text-slate-900 dark:text-white mb-6 flex items-center gap-2.5"
+            >
               {typeParam === 'online' ? (
-                <>
-                  <Video className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-                  <span>Live Online Classes</span>
-                </>
+                <><Video className="w-6 h-6 text-indigo-600 dark:text-indigo-400" /><span>Live Online Classes</span></>
               ) : typeParam === 'offline' ? (
-                <>
-                  <MapPin className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
-                  <span>In-Person Workshops</span>
-                </>
+                <><MapPin className="w-6 h-6 text-emerald-600 dark:text-emerald-400" /><span>In-Person Workshops</span></>
               ) : (
-                <>
-                  <BookOpen className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-                  <span>All Platform Courses</span>
-                </>
+                <><BookOpen className="w-6 h-6 text-indigo-600 dark:text-indigo-400" /><span>All Platform Courses</span></>
               )}
-            </h1>
+            </motion.h1>
+
             <div className="flex flex-col sm:flex-row gap-3">
-              {/* Search */}
               <div className="relative flex-1">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400" />
                 <input
@@ -317,7 +402,6 @@ export default function CoursesPageClient({ initialCourses, forceType }: { initi
                   className="input pl-10 w-full"
                 />
               </div>
-              {/* Sort */}
               <div className="relative">
                 <select
                   value={sort}
@@ -332,7 +416,6 @@ export default function CoursesPageClient({ initialCourses, forceType }: { initi
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               </div>
-              {/* Mobile filter toggle */}
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
                 className="lg:hidden flex items-center gap-2 btn-secondary dark:bg-slate-800 dark:border-slate-700 cursor-pointer"
@@ -344,6 +427,14 @@ export default function CoursesPageClient({ initialCourses, forceType }: { initi
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Error banner */}
+          {errorMsg && (
+            <div className="error-banner mb-6">
+              <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+              <span>{errorMsg}</span>
+            </div>
+          )}
+
           <div className="flex gap-8">
             {/* Sidebar — Desktop */}
             <aside className="hidden lg:block w-60 flex-shrink-0">
@@ -375,8 +466,16 @@ export default function CoursesPageClient({ initialCourses, forceType }: { initi
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between mb-5">
                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                  Showing <span className="font-semibold text-slate-900 dark:text-white">{filtered.length}</span> courses
-                  {category !== 'All' && <span className="text-indigo-600 dark:text-indigo-400 ml-1">in {category}</span>}
+                  Showing{' '}
+                  <span className="font-semibold text-slate-900 dark:text-white">
+                    {(safePage - 1) * pageSize + 1}–{Math.min(safePage * pageSize, filtered.length)}
+                  </span>{' '}
+                  of{' '}
+                  <span className="font-semibold text-slate-900 dark:text-white">{filtered.length}</span>{' '}
+                  courses
+                  {category !== 'All' && (
+                    <span className="text-indigo-600 dark:text-indigo-400 ml-1">in {category}</span>
+                  )}
                 </p>
               </div>
 
@@ -395,128 +494,128 @@ export default function CoursesPageClient({ initialCourses, forceType }: { initi
                   ))}
                 </div>
               ) : filtered.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-20 text-center">
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex flex-col items-center justify-center py-20 text-center"
+                >
                   <BookOpen className="w-16 h-16 text-slate-200 dark:text-slate-800 mb-4" />
                   <h3 className="font-bold text-slate-900 dark:text-white text-lg">No courses found</h3>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">Try adjusting your filters or search query.</p>
-                  <button
-                    onClick={() => {
-                      setCategory('All');
-                      setLevel('All Levels');
-                      setPriceRange(PRICE_RANGES[0]);
-                      setRatingFilter(RATING_OPTIONS[0]);
-                      setDurationFilter(DURATION_OPTIONS[0]);
-                      setSearch('');
-                    }}
-                    className="btn-primary mt-4 cursor-pointer"
-                  >
+                  <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">
+                    Try adjusting your filters or search query.
+                  </p>
+                  <button onClick={clearFilters} className="btn-primary mt-4 cursor-pointer">
                     Clear All Filters
                   </button>
-                </div>
-              ) : (
-                <motion.div
-                  variants={{
-                    hidden: { opacity: 0 },
-                    show: {
-                      opacity: 1,
-                      transition: {
-                        staggerChildren: 0.04,
-                      },
-                    },
-                  }}
-                  initial="hidden"
-                  animate="show"
-                  className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5"
-                >
-                  {filtered.map((course: any) => {
-                    const ratings = Array.isArray(course.ratings) ? course.ratings : [];
-                    const avgRating = ratings.length
-                      ? (ratings.reduce((a: number, r: any) => a + (Number(r.rating) || 0), 0) / ratings.length)
-                      : 4.8;
-                    const price = Number(course.coursePrice) || 0;
-                    const discount = Number(course.discount) || 0;
-                    const finalPrice = price * (1 - discount / 100);
-                    const lessonCount = course.lessons?.length || 0;
-                    const studentCount = course.enrolledStudents?.length || 0;
-                    const isWishlisted = user?.wishlist?.includes(String(course._id || course.id));
-
-                    return (
-                      <motion.div
-                        key={course._id || course.id}
-                        variants={{
-                          hidden: { opacity: 0, y: 20 },
-                          show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100, damping: 15 } },
-                        }}
-                      >
-                        <Link
-                          href={`/courses/${course._id || course.id}`}
-                          onMouseEnter={() => router.prefetch(`/courses/${course._id || course.id}`)}
-                          className="course-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden flex flex-col shadow-sm transition-all hover:shadow-md h-full"
-                        >
-                          <div className="relative overflow-hidden aspect-video bg-slate-100 dark:bg-slate-800">
-                            <img
-                              src={course.courseThumbnail || 'https://images.unsplash.com/photo-1587620962725-abab19836100?w=400&h=225&fit=crop'}
-                              alt={course.courseTitle}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                              onError={(e) => {
-                                e.currentTarget.src = 'https://images.unsplash.com/photo-1587620962725-abab19836100?w=400&h=225&fit=crop';
-                              }}
-                            />
-                            {discount > 0 && (
-                              <span className="absolute top-2 left-2 badge bg-red-500 text-white font-bold text-[10px] px-2 py-0.5 rounded">-{discount}%</span>
-                            )}
-                            {course.level && (
-                              <span className="absolute top-2 right-2 badge bg-slate-800 text-white font-bold text-[10px] px-2 py-0.5 rounded capitalize">{course.level}</span>
-                            )}
-
-                            {/* Wishlist Button */}
-                            <button
-                              onClick={(e) => handleToggleWishlist(e, String(course._id || course.id))}
-                              className="absolute bottom-2 right-2 p-1.5 bg-white/90 dark:bg-slate-900/90 rounded-full hover:bg-indigo-50 dark:hover:bg-slate-800 shadow transition-colors cursor-pointer text-red-500"
-                              aria-label="Save for later"
-                            >
-                              <Heart className={`w-4.5 h-4.5 ${isWishlisted ? 'fill-current' : 'text-slate-400 hover:text-red-500'}`} />
-                            </button>
-                          </div>
-                          <div className="p-4 flex-1 flex flex-col space-y-2">
-                            <div className="flex items-center justify-between gap-2">
-                              {course.category && (
-                                <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide">{course.category}</span>
-                              )}
-                              {course.institutionName && (
-                                <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 px-2 py-0.5 rounded truncate max-w-[120px]" title={course.institutionName}>
-                                  {course.institutionName}
-                                </span>
-                              )}
-                            </div>
-                            <h3 className="font-bold text-slate-900 dark:text-white text-sm leading-snug line-clamp-2 group-hover:text-indigo-700 dark:group-hover:text-indigo-400 transition-colors">
-                              {course.courseTitle}
-                            </h3>
-                            {course.tutorNames && (
-                              <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate">
-                                By: {course.tutorNames}
-                              </p>
-                            )}
-                            <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 pt-1">
-                              <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {lessonCount} lessons</span>
-                              <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {studentCount} enrolled</span>
-                            </div>
-                            <div className="flex items-center gap-1.5">
-                              <span className="text-amber-600 dark:text-amber-400 font-bold text-xs">{Number(avgRating).toFixed(1)}</span>
-                              <StarRating rating={avgRating} />
-                            </div>
-                            <div className="flex items-baseline gap-2 mt-auto pt-2 border-t border-slate-100 dark:border-slate-800">
-                              <span className="font-extrabold text-slate-900 dark:text-white">${Number(finalPrice).toFixed(2)}</span>
-                              {discount > 0 && (
-                                <span className="text-xs text-slate-400 line-through">${Number(price).toFixed(2)}</span>
-                              )}
-                            </div>
-                          </div>
-                        </Link>
-                      </motion.div>
-                    );
-                  })}
                 </motion.div>
+              ) : (
+                <>
+                  <motion.div
+                    key={`page-${safePage}`}
+                    variants={{
+                      hidden: { opacity: 0 },
+                      show: { opacity: 1, transition: { staggerChildren: 0.06 } },
+                    }}
+                    initial="hidden"
+                    animate="show"
+                    className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5"
+                  >
+                    {paginated.map((course: any) => {
+                      const ratings = Array.isArray(course.ratings) ? course.ratings : [];
+                      const avgRating = ratings.length
+                        ? ratings.reduce((a: number, r: any) => a + (Number(r.rating) || 0), 0) / ratings.length
+                        : 4.8;
+                      const price = Number(course.coursePrice) || 0;
+                      const discount = Number(course.discount) || 0;
+                      const finalPrice = price * (1 - discount / 100);
+                      const lessonCount = course.lessons?.length || 0;
+                      const studentCount = course.enrolledStudents?.length || 0;
+                      const isWishlisted = user?.wishlist?.includes(String(course._id || course.id));
+
+                      return (
+                        <motion.div
+                          key={course._id || course.id}
+                          variants={cardVariants}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true, margin: '-40px' }}
+                        >
+                          <Link
+                            href={`/courses/${course._id || course.id}`}
+                            onMouseEnter={() => router.prefetch(`/courses/${course._id || course.id}`)}
+                            className="course-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden flex flex-col shadow-sm transition-all hover:shadow-md h-full"
+                          >
+                            <div className="relative overflow-hidden aspect-video bg-slate-100 dark:bg-slate-800">
+                              <img
+                                src={course.courseThumbnail || 'https://images.unsplash.com/photo-1587620962725-abab19836100?w=400&h=225&fit=crop'}
+                                alt={course.courseTitle}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                onError={(e) => {
+                                  e.currentTarget.src = 'https://images.unsplash.com/photo-1587620962725-abab19836100?w=400&h=225&fit=crop';
+                                }}
+                              />
+                              {discount > 0 && (
+                                <span className="absolute top-2 left-2 badge bg-red-500 text-white font-bold text-[10px] px-2 py-0.5 rounded">-{discount}%</span>
+                              )}
+                              {course.level && (
+                                <span className="absolute top-2 right-2 badge bg-slate-800 text-white font-bold text-[10px] px-2 py-0.5 rounded capitalize">{course.level}</span>
+                              )}
+                              <button
+                                onClick={(e) => handleToggleWishlist(e, String(course._id || course.id))}
+                                className="absolute bottom-2 right-2 p-1.5 bg-white/90 dark:bg-slate-900/90 rounded-full hover:bg-indigo-50 dark:hover:bg-slate-800 shadow transition-colors cursor-pointer text-red-500"
+                                aria-label="Save for later"
+                              >
+                                <Heart className={`w-4.5 h-4.5 ${isWishlisted ? 'fill-current' : 'text-slate-400 hover:text-red-500'}`} />
+                              </button>
+                            </div>
+                            <div className="p-4 flex-1 flex flex-col space-y-2">
+                              <div className="flex items-center justify-between gap-2">
+                                {course.category && (
+                                  <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide">{course.category}</span>
+                                )}
+                                {course.institutionName && (
+                                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 px-2 py-0.5 rounded truncate max-w-[120px]" title={course.institutionName}>
+                                    {course.institutionName}
+                                  </span>
+                                )}
+                              </div>
+                              <h3 className="font-bold text-slate-900 dark:text-white text-sm leading-snug line-clamp-2 group-hover:text-indigo-700 dark:group-hover:text-indigo-400 transition-colors">
+                                {course.courseTitle}
+                              </h3>
+                              {course.tutorNames && (
+                                <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate">
+                                  By: {course.tutorNames}
+                                </p>
+                              )}
+                              <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 pt-1">
+                                <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {lessonCount} lessons</span>
+                                <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {studentCount} enrolled</span>
+                              </div>
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-amber-600 dark:text-amber-400 font-bold text-xs">{Number(avgRating).toFixed(1)}</span>
+                                <StarRating rating={avgRating} />
+                              </div>
+                              <div className="flex items-baseline gap-2 mt-auto pt-2 border-t border-slate-100 dark:border-slate-800">
+                                <span className="font-extrabold text-slate-900 dark:text-white">${Number(finalPrice).toFixed(2)}</span>
+                                {discount > 0 && (
+                                  <span className="text-xs text-slate-400 line-through">${Number(price).toFixed(2)}</span>
+                                )}
+                              </div>
+                            </div>
+                          </Link>
+                        </motion.div>
+                      );
+                    })}
+                  </motion.div>
+
+                  <Pagination
+                    page={safePage}
+                    totalPages={totalPages}
+                    pageSize={pageSize}
+                    pageSizeOptions={PAGE_SIZE_OPTIONS}
+                    onPageChange={p => { setPage(p); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    onPageSizeChange={setPageSize}
+                  />
+                </>
               )}
             </div>
           </div>

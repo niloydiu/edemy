@@ -2,15 +2,13 @@ import React from 'react';
 
 export default function Loading() {
   return (
-    <div className="min-h-[70vh] w-full flex flex-col justify-center items-center py-12 bg-slate-50 dark:bg-slate-955 transition-colors">
-      <div className="relative w-12 h-12">
-        {/* Outer Ring */}
-        <div className="absolute inset-0 rounded-full border-4 border-slate-200 dark:border-slate-800"></div>
-        {/* Spinning Segment */}
-        <div className="absolute inset-0 rounded-full border-4 border-indigo-600 border-t-transparent animate-spin"></div>
+    <div className="flex flex-col items-center justify-center py-24 gap-4">
+      <div className="relative w-10 h-10">
+        <div className="absolute inset-0 rounded-full border-[3px] border-slate-200 dark:border-slate-800" />
+        <div className="absolute inset-0 rounded-full border-[3px] border-indigo-600 border-t-transparent animate-spin" />
       </div>
-      <p className="mt-4 text-sm font-semibold tracking-wider text-indigo-600 dark:text-indigo-400 animate-pulse uppercase">
-        Loading...
+      <p className="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 animate-pulse">
+        Loading…
       </p>
     </div>
   );
