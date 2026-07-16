@@ -18,6 +18,7 @@ interface AuthContextType {
   user: User | null;
   token: string | null;
   loading: boolean;
+  loginEmail: (email: string, password: string) => Promise<void>;
   loginDemo: () => Promise<void>;
   loginCustom: (googleId: string, email: string, name: string, role: string) => Promise<void>;
   logout: () => void;
@@ -46,6 +47,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     setLoading(false);
   }, []);
+
+  const loginEmail = async (email: string, password: string) => {
+    setLoading(true);
+    try {
+      const res = await axios.post(`${API_BASE}/auth/login`, { email, password });
+      const { token: jwtToken, user: loggedUser } = res.data;
+      if (loggedUser.role !== 'admin') {
+        throw new Error('Access denied: not an admin account.');
+      }
+      setToken(jwtToken);
+      setUser(loggedUser);
+      localStorage.setItem('edemy_admin_token', jwtToken);
+      localStorage.setItem('edemy_admin_user', JSON.stringify(loggedUser));
+    } catch (err) {
+      console.error('Admin email login error:', err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const loginDemo = async () => {
     await loginCustom('admin_test_123', 'admin@edemy.com', 'Edemy Administrator', 'admin');
@@ -97,7 +118,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   });
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, loginDemo, loginCustom, logout, api }}>
+    <AuthContext.Provider value={{ user, token, loading, loginEmail, loginDemo, loginCustom, logout, api }}>
       {children}
     </AuthContext.Provider>
   );
