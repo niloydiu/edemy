@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   BookOpen, LogOut, User, LayoutDashboard, Search,
   Bell, ChevronDown, Menu, X, GraduationCap, Sun, Moon
@@ -184,44 +185,52 @@ export default function Navbar() {
                     <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
                   </button>
 
-                  {profileOpen && (
-                    <div className="absolute right-0 top-full mt-2 w-52 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-200/60 dark:shadow-none overflow-hidden z-50">
-                      <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800">
-                        <p className="font-semibold text-sm text-slate-900 dark:text-white truncate">{user.name}</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user.email}</p>
-                        <span className="mt-1.5 inline-block badge badge-primary capitalize">
-                          {user.role}
-                        </span>
-                      </div>
-                      <div className="py-1.5">
-                        <Link
-                          href={getDashboardHref()}
-                          onClick={() => setProfileOpen(false)}
-                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-                        >
-                          <LayoutDashboard className="w-4 h-4 text-slate-400" />
-                          Dashboard
-                        </Link>
-                        <Link
-                          href="/profile"
-                          onClick={() => setProfileOpen(false)}
-                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-                        >
-                          <User className="w-4 h-4 text-slate-400" />
-                          Profile
-                        </Link>
-                      </div>
-                      <div className="border-t border-slate-100 dark:border-slate-800 py-1.5">
-                        <button
-                          onClick={() => { setProfileOpen(false); logout(); }}
-                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-colors"
-                        >
-                          <LogOut className="w-4 h-4" />
-                          Sign Out
-                        </button>
-                      </div>
-                    </div>
-                  )}
+                  <AnimatePresence>
+                    {profileOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                        className="absolute right-0 top-full mt-2 w-52 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-200/60 dark:shadow-none overflow-hidden z-50 origin-top-right"
+                      >
+                        <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800">
+                          <p className="font-semibold text-sm text-slate-900 dark:text-white truncate">{user.name}</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user.email}</p>
+                          <span className="mt-1.5 inline-block badge badge-primary capitalize">
+                            {user.role}
+                          </span>
+                        </div>
+                        <div className="py-1.5">
+                          <Link
+                            href={getDashboardHref()}
+                            onClick={() => setProfileOpen(false)}
+                            className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                          >
+                            <LayoutDashboard className="w-4 h-4 text-slate-400" />
+                            Dashboard
+                          </Link>
+                          <Link
+                            href="/profile"
+                            onClick={() => setProfileOpen(false)}
+                            className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                          >
+                            <User className="w-4 h-4 text-slate-400" />
+                            Profile
+                          </Link>
+                        </div>
+                        <div className="border-t border-slate-100 dark:border-slate-800 py-1.5">
+                          <button
+                            onClick={() => { setProfileOpen(false); logout(); }}
+                            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-colors"
+                          >
+                            <LogOut className="w-4 h-4" />
+                            Sign Out
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </>
             ) : (

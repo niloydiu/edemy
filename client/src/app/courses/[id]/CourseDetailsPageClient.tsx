@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import { useAuth } from '@/context/AuthContext';
@@ -18,6 +18,7 @@ function getYouTubeId(url: string) {
 export default function CourseDetailsPageClient({ initialCourse }: { initialCourse: any }) {
   const { api, user, refreshProfile } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [course, setCourse] = useState<any>(initialCourse);
   const [isPurchasing, setIsPurchasing] = useState(false);
@@ -53,6 +54,18 @@ export default function CourseDetailsPageClient({ initialCourse }: { initialCour
     }
   }, [isEnrolled, course.lessons, previewLesson, loadProgress]);
 
+  useEffect(() => {
+    if (searchParams?.get('success') === 'true') {
+      refreshProfile().then(() => {
+        alert('Payment successful! You are now enrolled in this course.');
+        router.replace(`/courses/${course.id || course._id}`);
+      });
+    } else if (searchParams?.get('canceled') === 'true') {
+      alert('Payment was canceled. You have not been charged.');
+      router.replace(`/courses/${course.id || course._id}`);
+    }
+  }, [searchParams, refreshProfile, router, course.id, course._id]);
+
   const handleEnroll = async () => {
     if (!user) {
       router.push('/auth/login');
@@ -60,16 +73,18 @@ export default function CourseDetailsPageClient({ initialCourse }: { initialCour
     }
     setIsPurchasing(true);
     try {
-      await api.post('/purchases', {
+      const res = await api.post('/purchases', {
         courseId: course.id || course._id,
         amount: Number(course.coursePrice) || 99.99,
       });
-      await refreshProfile();
-      alert('Access Granted! Course enrolled successfully.');
-      router.refresh();
+      if (res.data && res.data.url) {
+        window.location.href = res.data.url;
+      } else {
+        throw new Error('No checkout session URL received');
+      }
     } catch (err) {
       console.error('Purchase failed:', err);
-      alert('Failed to process purchase.');
+      alert('Failed to initiate checkout session.');
     } finally {
       setIsPurchasing(false);
     }

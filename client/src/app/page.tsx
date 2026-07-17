@@ -88,8 +88,18 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (i = 0) => ({ opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.5, ease: 'easeOut' } }),
+  hidden: { opacity: 0, y: 40, scale: 0.98 },
+  visible: (i = 0) => ({ 
+    opacity: 1, 
+    y: 0, 
+    scale: 1, 
+    transition: { 
+      type: 'spring',
+      stiffness: 70,
+      damping: 15,
+      delay: i * 0.15 
+    } 
+  }),
 };
 
 export default function Home() {
@@ -117,8 +127,33 @@ export default function Home() {
       {/* ════════ HERO ════════ */}
       <section className="hero-gradient text-white py-20 lg:py-28 relative overflow-hidden">
         {/* Decorative blobs */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-400 rounded-full blur-3xl opacity-20 translate-y-1/2 -translate-x-1/2" />
+        {/* Decorative blobs */}
+        <motion.div 
+          animate={{
+            x: [0, 40, -20, 0],
+            y: [0, -40, 30, 0],
+            scale: [1, 1.15, 0.92, 1],
+          }}
+          transition={{
+            duration: 16,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="absolute top-0 right-0 w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-25 -translate-y-1/2 translate-x-1/2" 
+        />
+        <motion.div 
+          animate={{
+            x: [0, -30, 40, 0],
+            y: [0, 50, -30, 0],
+            scale: [1, 0.88, 1.12, 1],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-400 rounded-full blur-3xl opacity-20 translate-y-1/2 -translate-x-1/2" 
+        />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -246,14 +281,20 @@ export default function Home() {
             {CATEGORIES.map((cat, i) => (
               <motion.div
                 key={cat.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 30, scale: 0.96 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.07 }}
+                whileHover={{ y: -6, scale: 1.03 }}
+                transition={{ 
+                  type: 'spring', 
+                  stiffness: 110, 
+                  damping: 14,
+                  default: { delay: i * 0.05 } 
+                }}
               >
                 <Link href={`/courses?category=${encodeURIComponent(cat.name)}`}
-                  className="group flex flex-col items-center p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-indigo-200 dark:hover:border-indigo-700 hover:shadow-md hover:shadow-indigo-50/20 transition-all duration-200 text-center cursor-pointer">
-                  <cat.icon className="w-8 h-8 text-indigo-600 dark:text-indigo-400 mb-3" />
+                  className="group flex flex-col items-center p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-indigo-200 dark:hover:border-indigo-700 hover:shadow-md hover:shadow-indigo-50/20 transition-all duration-300 text-center cursor-pointer">
+                  <cat.icon className="w-8 h-8 text-indigo-600 dark:text-indigo-400 mb-3 group-hover:scale-110 transition-transform duration-300" />
                   <span className="font-semibold text-slate-800 dark:text-slate-200 text-sm group-hover:text-indigo-700 dark:group-hover:text-indigo-400 transition-colors">{cat.name}</span>
                   <span className="text-xs text-slate-500 dark:text-slate-400 mt-1">{cat.count}</span>
                 </Link>
@@ -305,12 +346,18 @@ export default function Home() {
                 return (
                   <motion.div
                     key={course._id || course.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.08 }}
+                    initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                    viewport={{ once: true, margin: '-50px' }}
+                    whileHover={{ y: -8, scale: 1.02 }}
+                    transition={{ 
+                      type: 'spring', 
+                      stiffness: 90, 
+                      damping: 15,
+                      default: { delay: i * 0.06 }
+                    }}
                   >
-                    <Link href={`/courses/${course._id || course.id}`} className="course-card group block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden">
+                    <Link href={`/courses/${course._id || course.id}`} className="course-card glow-hover group block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden">
                       <div className="relative overflow-hidden aspect-video bg-slate-100 dark:bg-slate-800">
                         <img
                           src={course.courseThumbnail || `https://images.unsplash.com/photo-1587620962725-abab19836100?w=400&h=225&fit=crop`}
@@ -443,10 +490,16 @@ export default function Home() {
             {TESTIMONIALS.map((t, i) => (
               <motion.div
                 key={t.name}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 35, scale: 0.96 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.12 }}
+                whileHover={{ y: -6, scale: 1.02 }}
+                transition={{ 
+                  type: 'spring', 
+                  stiffness: 90, 
+                  damping: 14,
+                  default: { delay: i * 0.08 }
+                }}
                 className="card p-6 space-y-4"
               >
                 <StarRating rating={t.rating} />
